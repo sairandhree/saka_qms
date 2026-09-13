@@ -2,6 +2,8 @@ package com.saka.qms.config;
 
 import com.saka.qms.model.Employee;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -36,5 +38,31 @@ public class JwtService {
                 .expiration(Date.from(now.plusMillis(expirationMilliseconds)))
                 .signWith(signingKey)
                 .compact();
+    }
+
+    public String extractUsername(String token) {
+        return parseClaims(token).getSubject();
+    }
+
+    public Boolean extractIsAdmin(String token) {
+        return parseClaims(token).get("isAdmin", Boolean.class);
+    }
+
+    private Claims parseClaims(String token) {
+        return Jwts.parser()
+                .verifyWith(signingKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
+
+    public boolean isValid(String token, String username) {
+        try {
+            Claims claims = parseClaims(token);
+            return username.equals(claims.getSubject())
+                    && claims.getExpiration().after(new Date());
+        } catch (JwtException | IllegalArgumentException exception) {
+            return false;
+        }
     }
 }
