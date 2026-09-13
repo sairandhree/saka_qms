@@ -49,10 +49,14 @@ public class NameOfItemController {
     public ResponseEntity<NameOfItem> create(
             @RequestBody NameOfItem entity,
             Authentication authentication) {
+        if (!accessControl.isAdmin(authentication)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         if (!accessControl.canAccessItem(authentication, entity)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         entity.setId(null);
+        AuditSupport.apply(entity, authentication);
         return ResponseEntity.ok(repository.save(entity));
     }
 
@@ -61,6 +65,9 @@ public class NameOfItemController {
             @PathVariable Integer id,
             @RequestBody NameOfItem entity,
             Authentication authentication) {
+        if (!accessControl.isAdmin(authentication)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         if (!repository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
@@ -68,6 +75,7 @@ public class NameOfItemController {
         if (!accessControl.canAccessItem(authentication, entity)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
+        AuditSupport.apply(entity, authentication);
         return ResponseEntity.ok(repository.save(entity));
     }
 
@@ -75,7 +83,10 @@ public class NameOfItemController {
     public ResponseEntity<Void> delete(
             @PathVariable Integer id,
             Authentication authentication) {
-        NameOfItem item = repository.findById(id).orElse(null);
+            if (!accessControl.isAdmin(authentication)) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
+            NameOfItem item = repository.findById(id).orElse(null);
         if (item == null) {
             return ResponseEntity.notFound().build();
         }

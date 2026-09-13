@@ -84,6 +84,15 @@ ADD COLUMN username VARCHAR(100),
 ADD COLUMN password VARCHAR(100),
 ADD COLUMN isAdmin BOOLEAN;
 
+ALTER TABLE qms_checklist.details
+RENAME COLUMN detailes_modified_by TO modified_by;
+
+ALTER TABLE qms_checklist.details
+RENAME COLUMN details_modified_on TO modified_on;
+
+ALTER TABLE qms_checklist.details
+RENAME COLUMN details_auth_by TO authorised_by;
+
 CREATE SEQUENCE qms_checklist.departments_id_seq;
 SELECT setval('qms_checklist.departments_id_seq',
               COALESCE((SELECT MAX(id) FROM qms_checklist.departments), 0) + 1,

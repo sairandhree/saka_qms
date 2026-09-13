@@ -1,8 +1,10 @@
 package com.saka.qms.web;
 
 import com.saka.qms.model.Identifiable;
+import com.saka.qms.model.Auditable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,18 +40,31 @@ public abstract class CrudController<T extends Identifiable<ID>, ID> {
     }
 
     @PostMapping
-    public ResponseEntity<T> create(@RequestBody T entity) {
+    public ResponseEntity<T> create(
+            @RequestBody T entity,
+            Authentication authentication) {
         entity.setId(null);
+        applyAudit(entity, authentication);
         return ResponseEntity.ok(repository.save(prepareForCreate(entity)));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<T> update(@PathVariable ID id, @RequestBody T entity) {
+    public ResponseEntity<T> update(
+            @PathVariable ID id,
+            @RequestBody T entity,
+            Authentication authentication) {
         if (!repository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
         entity.setId(id);
+        applyAudit(entity, authentication);
         return ResponseEntity.ok(repository.save(prepareForUpdate(id, entity)));
+    }
+
+    private void applyAudit(T entity, Authentication authentication) {
+        if (entity instanceof Auditable auditable) {
+            AuditSupport.apply(auditable, authentication);
+        }
     }
 
     @DeleteMapping("/{id}")

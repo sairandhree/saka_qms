@@ -15,7 +15,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "departments")
-public class Department implements Identifiable<Integer> {
+public class Department implements Identifiable<Integer>, Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "departments-id")
     @SequenceGenerator(name = "departments-id", sequenceName = "departments_id_seq",

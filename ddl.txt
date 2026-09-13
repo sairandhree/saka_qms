@@ -135,3 +135,13 @@ SELECT setval('qms_checklist.details_id_seq',
 -- Alter the column to use the sequence by default
 ALTER TABLE qms_checklist.details
 ALTER COLUMN id SET DEFAULT nextval('qms_checklist.details_id_seq');
+
+
+ALTER TABLE qms_checklist.details
+RENAME COLUMN detailes_modified_by TO modified_by;
+
+ALTER TABLE qms_checklist.details
+RENAME COLUMN details_modified_on TO modified_on;
+
+ALTER TABLE qms_checklist.details
+RENAME COLUMN details_auth_by TO authorised_by;

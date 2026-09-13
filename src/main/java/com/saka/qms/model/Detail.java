@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "details")
-public class Detail implements Identifiable<Integer> {
+public class Detail implements Identifiable<Integer>, Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "details-id")
     @SequenceGenerator(name = "details-id", sequenceName = "details_id_seq",
@@ -30,12 +30,12 @@ public class Detail implements Identifiable<Integer> {
     @Column(name = "sequence")
     private Integer sequence;
     private String passward;
-    @Column(name = "detailes_modified_by")
-    private String detailsModifiedBy;
-    @Column(name = "details_auth_by")
-    private String detailsAuthorisedBy;
-    @Column(name = "details_modified_on")
-    private LocalDateTime detailsModifiedOn;
+    @Column(name = "modified_by")
+    private String modifiedBy;
+    @Column(name = "authorised_by")
+    private String authorisedBy;
+    @Column(name = "modified_on")
+    private LocalDateTime modifiedOn;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -58,12 +58,12 @@ public class Detail implements Identifiable<Integer> {
     public void setSequence(Integer sequence) { this.sequence = sequence; }
     public String getPassward() { return passward; }
     public void setPassward(String passward) { this.passward = passward; }
-    public String getDetailsModifiedBy() { return detailsModifiedBy; }
-    public void setDetailsModifiedBy(String detailsModifiedBy) { this.detailsModifiedBy = detailsModifiedBy; }
-    public String getDetailsAuthorisedBy() { return detailsAuthorisedBy; }
-    public void setDetailsAuthorisedBy(String detailsAuthorisedBy) { this.detailsAuthorisedBy = detailsAuthorisedBy; }
-    public LocalDateTime getDetailsModifiedOn() { return detailsModifiedOn; }
-    public void setDetailsModifiedOn(LocalDateTime detailsModifiedOn) { this.detailsModifiedOn = detailsModifiedOn; }
+    public String getModifiedBy() { return modifiedBy; }
+    public void setModifiedBy(String modifiedBy) { this.modifiedBy = modifiedBy; }
+    public String getAuthorisedBy() { return authorisedBy; }
+    public void setAuthorisedBy(String authorisedBy) { this.authorisedBy = authorisedBy; }
+    public LocalDateTime getModifiedOn() { return modifiedOn; }
+    public void setModifiedOn(LocalDateTime modifiedOn) { this.modifiedOn = modifiedOn; }
     public NameOfItem getItem() { return item; }
     public void setItem(NameOfItem item) { this.item = item; }
 }

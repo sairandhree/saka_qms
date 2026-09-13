@@ -19,7 +19,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "employees")
-public class Employee implements Identifiable<Integer> {
+public class Employee implements Identifiable<Integer>, Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employees-id")
     @SequenceGenerator(name = "employees-id", sequenceName = "employees_id_seq",

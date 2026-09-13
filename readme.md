@@ -51,9 +51,6 @@ Example department:
 ```json
 {
   "deptName": "Quality",
-  "manager": "Jane Doe",
-  "modifiedBy": "admin",
-  "modifiedOn": "2026-09-13T00:00:00",
-  "authorisedBy": "admin"
+  "manager": "Jane Doe"
 }
 ```
