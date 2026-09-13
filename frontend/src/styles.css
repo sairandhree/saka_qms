@@ -90,10 +90,241 @@ button {
   font-weight: 600;
 }
 
+.embedded-hidden {
+  display: none;
+}
+
 .workspace {
   width: min(1180px, calc(100% - 48px));
   margin: 0 auto;
   padding: 38px 0 54px;
+}
+
+.admin-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #c7d9e9;
+}
+
+.admin-tabs button {
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: #54728d;
+  font-weight: 700;
+  padding: 12px 16px;
+}
+
+.admin-tabs button.active {
+  border-bottom-color: #2674b9;
+  color: #123b63;
+}
+
+.admin-card {
+  border: 1px solid #d0e0ef;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 16px 50px rgba(28, 76, 120, 0.1);
+  padding: 28px;
+}
+
+.admin-card h2 {
+  margin: 6px 0 24px;
+  color: #123b63;
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.admin-form {
+  display: grid;
+  gap: 18px;
+}
+
+.form-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.form-grid.two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.admin-field {
+  display: grid;
+  gap: 6px;
+}
+
+.admin-field > span,
+.field-label {
+  margin: 0;
+  color: #3d6284;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.admin-input {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #bdcee0;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #17201f;
+  outline: none;
+  padding: 10px 11px;
+}
+
+.admin-input:focus {
+  border-color: #2674b9;
+  box-shadow: 0 0 0 3px rgba(38, 116, 185, 0.12);
+}
+
+.check-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #365873;
+  font-weight: 600;
+}
+
+.department-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  margin-top: 10px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.editor-select-row {
+  display: flex;
+  gap: 10px;
+}
+
+.editor-select-row .admin-input {
+  flex: 1;
+}
+
+.table-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.form-actions .primary-button,
+.admin-save {
+  min-height: 42px;
+  padding: 0 18px;
+}
+
+.secondary-button,
+.table-action,
+.remove-button {
+  border: 1px solid #a9c4dc;
+  border-radius: 8px;
+  background: #f2f8fd;
+  color: #216da9;
+  font-weight: 700;
+  padding: 9px 14px;
+}
+
+.admin-table-wrap {
+  margin-top: 28px;
+  overflow-x: auto;
+  border: 1px solid #d0e0ef;
+  border-radius: 12px;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 620px;
+}
+
+.admin-table th,
+.admin-table td {
+  border-bottom: 1px solid #e0ebf4;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+.admin-table th {
+  background: #e5f1fb;
+  color: #2e5d85;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.admin-table td {
+  color: #365873;
+  font-size: 0.9rem;
+}
+
+.admin-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.code-editor-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.code-editor-pair {
+  display: grid;
+  gap: 10px;
+  border: 1px solid #d0e0ef;
+  border-radius: 10px;
+  background: #f6faff;
+  padding: 10px;
+}
+
+.detail-editor {
+  display: grid;
+  gap: 14px;
+  border-top: 1px solid #d7e5f0;
+  padding-top: 20px;
+}
+
+.editor-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.editor-heading h3 {
+  margin: 5px 0 0;
+  color: #123b63;
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.detail-editor-row {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1.2fr auto;
+  align-items: end;
+  gap: 10px;
+  border: 1px solid #d0e0ef;
+  border-radius: 10px;
+  background: #fbfdff;
+  padding: 12px;
+}
+
+.remove-button {
+  color: #a13e3c;
+  border-color: #e1b8b5;
+  background: #fff5f4;
+}
+
+.admin-footer {
+  color: #6c8294;
+  font-size: 0.8rem;
+  margin: 18px 0 0;
 }
 
 .search-panel,
@@ -522,6 +753,21 @@ button {
 
   .search-row {
     flex-direction: column;
+  }
+
+  .form-grid.two,
+  .code-editor-grid,
+  .detail-editor-row {
+    grid-template-columns: 1fr;
+  }
+
+  .editor-select-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-tabs {
+    overflow-x: auto;
   }
 
   .print-button {
