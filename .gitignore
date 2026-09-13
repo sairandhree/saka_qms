@@ -2,3 +2,5 @@
 .idea/modules.xml
 .idea/saka_qms.iml
 .idea/vcs.xml
+*.class
+target/
