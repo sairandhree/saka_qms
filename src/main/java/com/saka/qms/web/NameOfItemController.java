@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -33,6 +34,15 @@ public class NameOfItemController {
     @GetMapping
     public List<NameOfItem> findAll(Authentication authentication) {
         return accessControl.visibleItems(authentication, repository.findAll());
+    }
+
+    @GetMapping("/search")
+    public List<NameOfItem> search(
+            @RequestParam String name,
+            Authentication authentication) {
+        return accessControl.visibleItems(
+                authentication,
+                repository.findByNameOfItemContainingIgnoreCase(name));
     }
 
     @GetMapping("/{id}")
