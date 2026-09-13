@@ -83,3 +83,23 @@ ALTER TABLE qms_checklist.employees
 ADD COLUMN username VARCHAR(100),
 ADD COLUMN password VARCHAR(100),
 ADD COLUMN isAdmin BOOLEAN;
+
+CREATE SEQUENCE departments_id_seq;
+SELECT setval('departments_id_seq', COALESCE((SELECT MAX(id) FROM qms_checklist.departments), 1));
+ALTER TABLE qms_checklist.departments
+ALTER COLUMN id SET DEFAULT nextval('departments_id_seq');
+
+CREATE SEQUENCE employees_id_seq;
+SELECT setval('employees_id_seq', COALESCE((SELECT MAX(id) FROM qms_checklist.employees), 1));
+ALTER TABLE qms_checklist.employees
+ALTER COLUMN id SET DEFAULT nextval('employees_id_seq');
+
+CREATE SEQUENCE items_id_seq;
+SELECT setval('items_id_seq', COALESCE((SELECT MAX(id) FROM qms_checklist.name_of_item), 1));
+ALTER TABLE qms_checklist.name_of_item
+ALTER COLUMN id SET DEFAULT nextval('items_id_seq');
+
+CREATE SEQUENCE details_id_seq;
+SELECT setval('details_id_seq', COALESCE((SELECT MAX(id) FROM qms_checklist.details), 1));
+ALTER TABLE qms_checklist.details
+ALTER COLUMN id SET DEFAULT nextval('details_id_seq');

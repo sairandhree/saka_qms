@@ -5,10 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -16,8 +19,10 @@ import java.util.Set;
 
 @Entity
 @Table(name = "employees")
-public class Employee {
+public class Employee implements Identifiable<Integer> {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employees-id")
+    @SequenceGenerator(name = "employees-id", sequenceName = "employees_id_seq", allocationSize = 1)
     private Integer id;
     @Column(name = "emp_id")
     private Integer employeeId;

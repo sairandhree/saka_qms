@@ -1,0 +1,33 @@
+meta {
+  name: Update item
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/api/items/{{itemId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "nameOfItem": "Updated Checklist Item",
+    "note": "Updated note",
+    "sequence": "1",
+    "modifiedBy": "admin",
+    "modifiedOn": "2026-09-13T00:00:00",
+    "authorisedBy": "admin",
+    "department": {
+      "id": {{departmentId}}
+    }
+  }
+}

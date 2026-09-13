@@ -1,0 +1,31 @@
+meta {
+  name: Update detail
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/api/details/{{detailId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "details": "Updated detail",
+    "note": "Updated note",
+    "parameters": "Updated parameters",
+    "relatedItemId": {{itemId}},
+    "link": "https://example.com",
+    "sequence": 1,
+    "passward": "example"
+  }
+}

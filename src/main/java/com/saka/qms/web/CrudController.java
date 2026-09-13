@@ -1,5 +1,6 @@
 package com.saka.qms.web;
 
+import com.saka.qms.model.Identifiable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 
-public abstract class CrudController<T, ID> {
+public abstract class CrudController<T extends Identifiable<ID>, ID> {
     private final JpaRepository<T, ID> repository;
 
     protected CrudController(JpaRepository<T, ID> repository) {
@@ -38,6 +39,7 @@ public abstract class CrudController<T, ID> {
 
     @PostMapping
     public ResponseEntity<T> create(@RequestBody T entity) {
+        entity.setId(null);
         return ResponseEntity.ok(repository.save(prepareForCreate(entity)));
     }
 
@@ -46,6 +48,7 @@ public abstract class CrudController<T, ID> {
         if (!repository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
+        entity.setId(id);
         return ResponseEntity.ok(repository.save(prepareForUpdate(id, entity)));
     }
 

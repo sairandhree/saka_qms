@@ -1,0 +1,15 @@
+meta {
+  name: List employees
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/employees
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

@@ -1,0 +1,15 @@
+meta {
+  name: List details
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/details
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

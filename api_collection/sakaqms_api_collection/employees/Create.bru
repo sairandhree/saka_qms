@@ -1,0 +1,33 @@
+meta {
+  name: Create employee
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/employees
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "employeeId": 1002,
+    "employeeName": "New Employee",
+    "username": "new.employee",
+    "password": "ChangeMe123!",
+    "isAdmin": false,
+    "modifiedBy": "admin",
+    "modifiedOn": "2026-09-13T00:00:00",
+    "authorisedBy": "admin",
+    "departments": []
+  }
+}

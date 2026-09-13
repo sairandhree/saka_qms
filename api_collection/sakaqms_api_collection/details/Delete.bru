@@ -1,0 +1,15 @@
+meta {
+  name: Delete detail
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{baseUrl}}/api/details/{{detailId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

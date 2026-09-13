@@ -1,0 +1,15 @@
+meta {
+  name: Get item
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/items/{{itemId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

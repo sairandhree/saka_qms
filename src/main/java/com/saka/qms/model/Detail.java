@@ -4,16 +4,21 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.SequenceGenerator;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "details")
-public class Detail {
+public class Detail implements Identifiable<Integer> {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "details-id")
+    @SequenceGenerator(name = "details-id", sequenceName = "details_id_seq", allocationSize = 1)
     private Integer id;
     private String details;
     private String note;

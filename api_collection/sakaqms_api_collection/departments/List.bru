@@ -1,0 +1,15 @@
+meta {
+  name: List departments
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/api/departments
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

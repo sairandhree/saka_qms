@@ -1,0 +1,33 @@
+meta {
+  name: Create item
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/items
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "nameOfItem": "New Checklist Item",
+    "note": "Item note",
+    "sequence": "1",
+    "modifiedBy": "admin",
+    "modifiedOn": "2026-09-13T00:00:00",
+    "authorisedBy": "admin",
+    "department": {
+      "id": {{departmentId}}
+    }
+  }
+}
