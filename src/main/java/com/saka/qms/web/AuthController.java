@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -27,20 +29,29 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         if (request.username() == null || request.password() == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            return unauthorized();
         }
 
-        return employeeRepository.findByUsername(request.username())
+        Optional<Employee> authenticatedEmployee = employeeRepository.findByUsername(request.username())
                 .filter(employee -> employee.getPassword() != null
-                        && passwordEncoder.matches(request.password(), employee.getPassword()))
-                .map(this::toLoginResponse)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
+                        && passwordEncoder.matches(request.password(), employee.getPassword()));
+        if (authenticatedEmployee.isEmpty()) {
+            return unauthorized();
+        }
+        return ResponseEntity.ok(createLoginResponse(authenticatedEmployee.get()));
     }
 
-    private LoginResponse toLoginResponse(Employee employee) {
+    private ResponseEntity<LoginError> unauthorized() {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new LoginError("Invalid username or password"));
+    }
+
+    public record LoginError(String message) {
+    }
+
+    private LoginResponse createLoginResponse(Employee employee) {
         return new LoginResponse(
                 jwtService.createToken(employee),
                 employee.getId(),

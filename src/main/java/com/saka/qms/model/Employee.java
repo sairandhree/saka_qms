@@ -22,7 +22,8 @@ import java.util.Set;
 public class Employee implements Identifiable<Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employees-id")
-    @SequenceGenerator(name = "employees-id", sequenceName = "employees_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "employees-id", sequenceName = "employees_id_seq",
+            schema = "qms_checklist", allocationSize = 1)
     private Integer id;
     @Column(name = "emp_id")
     private Integer employeeId;

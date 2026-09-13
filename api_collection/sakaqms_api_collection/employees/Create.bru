@@ -10,12 +10,12 @@ post {
   auth: bearer
 }
 
-auth:bearer {
-  token: {{token}}
-}
-
 headers {
   Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{token}}
 }
 
 body:json {
@@ -23,11 +23,15 @@ body:json {
     "employeeId": 1002,
     "employeeName": "New Employee",
     "username": "new.employee",
-    "password": "ChangeMe123!",
+    "password": "abcd",
     "isAdmin": false,
     "modifiedBy": "admin",
     "modifiedOn": "2026-09-13T00:00:00",
     "authorisedBy": "admin",
-    "departments": []
+    "departments": [
+      {
+        "id": 1
+      }
+    ]
   }
 }

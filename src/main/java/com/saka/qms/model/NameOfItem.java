@@ -21,7 +21,8 @@ import java.util.List;
 public class NameOfItem implements Identifiable<Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "items-id")
-    @SequenceGenerator(name = "items-id", sequenceName = "items_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "items-id", sequenceName = "items_id_seq",
+            schema = "qms_checklist", allocationSize = 1)
     private Integer id;
     @Column(name = "name_of_item")
     private String nameOfItem;

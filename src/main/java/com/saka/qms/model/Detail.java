@@ -18,7 +18,8 @@ import java.time.LocalDateTime;
 public class Detail implements Identifiable<Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "details-id")
-    @SequenceGenerator(name = "details-id", sequenceName = "details_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "details-id", sequenceName = "details_id_seq",
+            schema = "qms_checklist", allocationSize = 1)
     private Integer id;
     private String details;
     private String note;

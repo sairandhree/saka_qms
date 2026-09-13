@@ -90,7 +90,9 @@ alter table qms_checklist.employees
 CREATE SEQUENCE qms_checklist.departments_id_seq;
 
 -- Set the sequence to start after the current max id
-SELECT setval('qms_checklist.departments_id_seq', (SELECT MAX(id) FROM qms_checklist.departments));
+    SELECT setval('qms_checklist.departments_id_seq',
+              COALESCE((SELECT MAX(id) FROM qms_checklist.departments), 0) + 1,
+              false);
 
 -- Alter the column to use the sequence by default
 ALTER TABLE qms_checklist.departments
@@ -100,7 +102,9 @@ ALTER COLUMN id SET DEFAULT nextval('qms_checklist.departments_id_seq');
 CREATE SEQUENCE qms_checklist.employees_id_seq;
 
 -- Set the sequence to start after the current max id
-SELECT setval('employees_id_seq', (SELECT MAX(id) FROM qms_checklist.employees));
+SELECT setval('qms_checklist.employees_id_seq',
+              COALESCE((SELECT MAX(id) FROM qms_checklist.employees), 0) + 1,
+              false);
 
 -- Alter the column to use the sequence by default
 ALTER TABLE qms_checklist.employees
@@ -111,7 +115,9 @@ ALTER COLUMN id SET DEFAULT nextval('qms_checklist.employees_id_seq');
 CREATE SEQUENCE qms_checklist.items_id_seq;
 
 -- Set the sequence to start after the current max id
-SELECT setval('qms_checklist.items_id_seq', (SELECT MAX(id) FROM qms_checklist.name_of_item));
+SELECT setval('qms_checklist.items_id_seq',
+              COALESCE((SELECT MAX(id) FROM qms_checklist.name_of_item), 0) + 1,
+              false);
 
 -- Alter the column to use the sequence by default
 ALTER TABLE qms_checklist.name_of_item
@@ -122,7 +128,9 @@ ALTER COLUMN id SET DEFAULT nextval('qms_checklist.items_id_seq');
 CREATE SEQUENCE qms_checklist.details_id_seq;
 
 -- Set the sequence to start after the current max id
-SELECT setval('qms_checklist.details_id_seq', (SELECT MAX(id) FROM qms_checklist.details));
+SELECT setval('qms_checklist.details_id_seq',
+              COALESCE((SELECT MAX(id) FROM qms_checklist.details), 0) + 1,
+              false);
 
 -- Alter the column to use the sequence by default
 ALTER TABLE qms_checklist.details

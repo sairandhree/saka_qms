@@ -18,7 +18,8 @@ import java.util.List;
 public class Department implements Identifiable<Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "departments-id")
-    @SequenceGenerator(name = "departments-id", sequenceName = "departments_id_seq", allocationSize = 1)
+    @SequenceGenerator(name = "departments-id", sequenceName = "departments_id_seq",
+            schema = "qms_checklist", allocationSize = 1)
     private Integer id;
 
     @Column(name = "dept_name")

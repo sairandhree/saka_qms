@@ -32,10 +32,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleInvalidRequest(
             Exception exception,
             HttpServletRequest request) {
+        Throwable cause = exception;
+        while (cause.getCause() != null) {
+            cause = cause.getCause();
+        }
         return buildError(
                 HttpStatus.BAD_REQUEST,
                 "Invalid request",
-                "The request body or parameter format is invalid.",
+                "The request body or parameter format is invalid: "
+                        + cause.getMessage(),
                 request);
     }
 
