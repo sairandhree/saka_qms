@@ -830,6 +830,11 @@ button {
     display: none !important;
   }
 
+  .item-note,
+  .note-column {
+    display: none !important;
+  }
+
   .print-only {
     display: block;
   }
@@ -868,12 +873,12 @@ button {
   }
 
   .detail-grid {
-    grid-template-columns: 1.2fr 1fr 1.2fr 1.2fr;
+    grid-template-columns: 1.5fr 1.5fr 1.2fr;
     box-shadow: none;
   }
 
   .detail-row {
-    grid-template-columns: 1.2fr 1fr 1.2fr 1.2fr;
+    grid-template-columns: 1.5fr 1.5fr 1.2fr;
   }
 
   .print-comment {

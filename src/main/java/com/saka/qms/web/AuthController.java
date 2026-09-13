@@ -56,12 +56,18 @@ public class AuthController {
                 jwtService.createToken(employee),
                 employee.getId(),
                 employee.getUsername(),
+                employee.getEmployeeName(),
                 employee.getIsAdmin());
     }
 
     public record LoginRequest(String username, String password) {
     }
 
-    public record LoginResponse(String token, Integer employeeId, String username, Boolean isAdmin) {
+    public record LoginResponse(
+            String token,
+            Integer employeeId,
+            String username,
+            String employeeName,
+            Boolean isAdmin) {
     }
 }

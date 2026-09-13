@@ -128,7 +128,7 @@ function AdminWorkspace({ user, onLogout }) {
           <h1>Administration</h1>
         </div>
         <div className="topbar-actions">
-          <span className="role-pill">Administrator</span>
+          <span className="role-pill">{user.employeeName || user.username}</span>
           <button className="text-button" onClick={onLogout}>Sign out</button>
         </div>
       </header>
@@ -625,7 +625,7 @@ function ChecklistWorkspace({ user, onLogout, onBack, embedded = false }) {
           <h1>Checklist workspace</h1>
         </div>
         <div className="topbar-actions">
-          <span className="role-pill">{user.isAdmin ? "Administrator" : "Employee"}</span>
+          <span className="role-pill">{user.employeeName || user.username}</span>
           {onBack && <button className="text-button" onClick={onBack}>Admin home</button>}
           <button className="text-button" onClick={onLogout}>Sign out</button>
         </div>
@@ -732,13 +732,13 @@ function ChecklistWorkspace({ user, onLogout, onBack, embedded = false }) {
               ) : (
                 <div className="detail-grid">
                   <div className="grid-heading">Detail</div>
-                  <div className="grid-heading">Note</div>
+                  <div className="grid-heading note-column">Note</div>
                   <div className="grid-heading">Parameters</div>
                   <div className="grid-heading">Comments</div>
                   {details.map((detail) => (
                     <div className="detail-row" key={detail.id}>
                       <div className="detail-cell">{detail.details}</div>
-                      <div className="detail-cell">{detail.note}</div>
+                      <div className="detail-cell note-column">{detail.note}</div>
                       <div className="detail-cell">{detail.parameters}</div>
                       <textarea
                         className="comment-cell no-print"
