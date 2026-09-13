@@ -97,26 +97,55 @@ CREATE SEQUENCE qms_checklist.departments_id_seq;
 SELECT setval('qms_checklist.departments_id_seq',
               COALESCE((SELECT MAX(id) FROM qms_checklist.departments), 0) + 1,
               false);
+
+-- Alter the column to use the sequence by default
 ALTER TABLE qms_checklist.departments
 ALTER COLUMN id SET DEFAULT nextval('qms_checklist.departments_id_seq');
 
+-- Create a sequence
 CREATE SEQUENCE qms_checklist.employees_id_seq;
+
+-- Set the sequence to start after the current max id
 SELECT setval('qms_checklist.employees_id_seq',
               COALESCE((SELECT MAX(id) FROM qms_checklist.employees), 0) + 1,
               false);
+
+-- Alter the column to use the sequence by default
 ALTER TABLE qms_checklist.employees
 ALTER COLUMN id SET DEFAULT nextval('qms_checklist.employees_id_seq');
 
+
+-- Create a sequence
 CREATE SEQUENCE qms_checklist.items_id_seq;
+
+-- Set the sequence to start after the current max id
 SELECT setval('qms_checklist.items_id_seq',
               COALESCE((SELECT MAX(id) FROM qms_checklist.name_of_item), 0) + 1,
               false);
+
+-- Alter the column to use the sequence by default
 ALTER TABLE qms_checklist.name_of_item
 ALTER COLUMN id SET DEFAULT nextval('qms_checklist.items_id_seq');
 
+
+-- Create a sequence
 CREATE SEQUENCE qms_checklist.details_id_seq;
+
+-- Set the sequence to start after the current max id
 SELECT setval('qms_checklist.details_id_seq',
               COALESCE((SELECT MAX(id) FROM qms_checklist.details), 0) + 1,
               false);
+
+-- Alter the column to use the sequence by default
 ALTER TABLE qms_checklist.details
 ALTER COLUMN id SET DEFAULT nextval('qms_checklist.details_id_seq');
+
+
+    ALTER TABLE qms_checklist.details
+    RENAME COLUMN detailes_modified_by TO modified_by;
+
+    ALTER TABLE qms_checklist.details
+    RENAME COLUMN details_modified_on TO modified_on;
+
+    ALTER TABLE qms_checklist.details
+    RENAME COLUMN details_auth_by TO authorised_by;
