@@ -1,0 +1,28 @@
+psql -U postgres -d SAKA admin
+
+to be correct in name_of_item
+
+
+UPDATE qms_checklist.details
+SET note = REPLACE(note, '^', ','),
+    details = REPLACE(details, '^', ','),
+    parameters = REPLACE(parameters, '^', ',');
+   
+
+
+   UPDATE qms_checklist.name_of_item
+SET note = REPLACE(note, '^', ','),
+    name_of_item = REPLACE(name_of_item, '^', ','),
+    code1 = REPLACE(code1, '^', ','),
+    code2 = REPLACE(code2, '^', ','),
+    code3 = REPLACE(code3, '^', ','),
+    code4 = REPLACE(code4, '^', ','),
+    code5 = REPLACE(code5, '^', ','),
+    cdinf1 = REPLACE(cdinf1, '^', ','),
+    cdinf2 = REPLACE(cdinf2, '^', ','),
+    cdinf3 = REPLACE(cdinf3, '^', ','),
+    cdinf4 = REPLACE(cdinf4, '^', ','),
+    cdinf5 = REPLACE(cdinf5, '^', ',');
+   
+
+

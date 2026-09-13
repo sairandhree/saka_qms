@@ -1,6 +1,26 @@
 
 
+CREATE  TABLE qms_checklist.departments (
+    id INTEGER PRIMARY KEY,
+    dept_name VARCHAR(100),
+    manager VARCHAR(100),
+    modified_by VARCHAR(50),
+    modified_on TIMESTAMP,
+    authorised_by VARCHAR(50)
+);
 
+
+CREATE TABLE qms_checklist.employees (
+    id INTEGER PRIMARY KEY,
+    emp_id INTEGER,
+    emp_name VARCHAR(100),
+    emp_dept INTEGER,
+    modified_by VARCHAR(50),
+    modified_on TIMESTAMP,
+    authorised_by VARCHAR(50),
+    CONSTRAINT fk_emp_dept FOREIGN KEY (emp_dept)
+        REFERENCES qms_checklist.departments(id)
+);
 
 --DROP TABLE IF EXISTS qms_checklist.name_of_item;
 CREATE  TABLE qms_checklist.name_of_item (
@@ -58,3 +78,9 @@ CREATE TABLE qms_checklist.employee_departments (
 
 alter table qms_checklist.employees
  drop column emp_dept;
+
+
+ ALTER TABLE qms_checklist.employees
+ ADD COLUMN username VARCHAR(100),
+ ADD COLUMN password VARCHAR(100),
+ ADD COLUMN isAdmin BOOLEAN;

@@ -1,0 +1,14 @@
+com\saka\qms\model\Detail.class
+com\saka\qms\web\DetailController.class
+com\saka\qms\repository\NameOfItemRepository.class
+com\saka\qms\SakaQmsApplication.class
+com\saka\qms\web\DepartmentController.class
+com\saka\qms\repository\EmployeeRepository.class
+com\saka\qms\repository\DetailRepository.class
+com\saka\qms\web\NameOfItemController.class
+com\saka\qms\web\CrudController.class
+com\saka\qms\model\Employee.class
+com\saka\qms\repository\DepartmentRepository.class
+com\saka\qms\model\Department.class
+com\saka\qms\model\NameOfItem.class
+com\saka\qms\web\EmployeeController.class

@@ -78,3 +78,8 @@ CREATE TABLE qms_checklist.employee_departments (
 
 alter table qms_checklist.employees
  drop column emp_dept;
+
+ALTER TABLE qms_checklist.employees
+ADD COLUMN username VARCHAR(100),
+ADD COLUMN password VARCHAR(100),
+ADD COLUMN isAdmin BOOLEAN;
