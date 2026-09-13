@@ -17,6 +17,14 @@ public abstract class CrudController<T, ID> {
         this.repository = repository;
     }
 
+    protected T prepareForCreate(T entity) {
+        return entity;
+    }
+
+    protected T prepareForUpdate(ID id, T entity) {
+        return entity;
+    }
+
     @GetMapping
     public List<T> findAll() {
         return repository.findAll();
@@ -30,7 +38,7 @@ public abstract class CrudController<T, ID> {
 
     @PostMapping
     public ResponseEntity<T> create(@RequestBody T entity) {
-        return ResponseEntity.ok(repository.save(entity));
+        return ResponseEntity.ok(repository.save(prepareForCreate(entity)));
     }
 
     @PutMapping("/{id}")
@@ -38,7 +46,7 @@ public abstract class CrudController<T, ID> {
         if (!repository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(repository.save(entity));
+        return ResponseEntity.ok(repository.save(prepareForUpdate(id, entity)));
     }
 
     @DeleteMapping("/{id}")
