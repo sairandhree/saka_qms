@@ -34,6 +34,8 @@ public class EmployeeController extends CrudController<Employee, Integer> {
         } else {
             encodePassword(employee);
         }
+        employee.setEmployeeId(existing.getEmployeeId());
+        employee.setUsername(existing.getUsername());
         return employee;
     }
 

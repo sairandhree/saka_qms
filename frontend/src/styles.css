@@ -129,6 +129,29 @@ button {
   padding: 28px;
 }
 
+.brand-logo {
+  display: block;
+  width: min(220px, 100%);
+  height: auto;
+  object-fit: contain;
+}
+
+.login-card .brand-logo {
+  width: min(280px, 100%);
+  margin: 0 auto 18px;
+}
+
+.topbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.topbar-brand .brand-logo {
+  width: 150px;
+  max-height: 48px;
+}
+
 .admin-card h2 {
   margin: 6px 0 24px;
   color: #123b63;
@@ -138,6 +161,18 @@ button {
 .admin-form {
   display: grid;
   gap: 18px;
+}
+
+.admin-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.admin-toolbar .muted {
+  margin: 0;
 }
 
 .form-grid {
@@ -213,6 +248,80 @@ button {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
+  align-items: center;
+}
+
+.inline-input {
+  max-width: 480px;
+}
+
+.icon-button {
+  border: 0;
+  background: transparent;
+  color: #216da9;
+  cursor: pointer;
+  font-size: 1.25rem;
+  line-height: 1;
+  padding: 6px;
+}
+
+.delete-icon {
+  color: #a13e3c;
+}
+
+.edit-icon {
+  color: #216da9;
+}
+
+.save-icon {
+  color: #21804b;
+}
+
+.inline-employee-editor {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
+  align-items: center;
+  gap: 8px;
+}
+
+.department-options.compact {
+  grid-column: 1 / -1;
+  margin-top: 0;
+}
+
+.modal-backdrop {
+  position: fixed;
+  z-index: 20;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(12, 43, 70, 0.42);
+  padding: 20px;
+}
+
+.modal-card {
+  width: min(680px, 100%);
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  border: 1px solid #c7dbea;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 24px 70px rgba(13, 55, 91, 0.28);
+  padding: 24px;
+}
+
+.modal-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.modal-heading h3 {
+  margin: 0;
+  color: #123b63;
+  font-family: "Space Grotesk", sans-serif;
 }
 
 .form-actions .primary-button,
