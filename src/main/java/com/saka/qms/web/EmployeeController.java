@@ -27,7 +27,7 @@ public class EmployeeController extends CrudController<Employee, Integer> {
 
     @Override
     @GetMapping
-    public List<Employee> findAll() {
+    public List<Employee> findAll(Authentication authentication) {
         return repository.findAll().stream()
                 .filter(employee -> !Boolean.TRUE.equals(employee.getIsDeleted()))
                 .toList();

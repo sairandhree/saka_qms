@@ -23,6 +23,8 @@ export default function ItemAdmin({ onError }) {
     return items.filter((item) => item.nameOfItem?.toLowerCase().includes(filter));
   }, [filterText, items]);
 
+  const selectableDepartments = useMemo(() => departments, [departments]);
+
   async function load() {
     try {
       const [itemData, departmentData] = await Promise.all([
@@ -173,7 +175,7 @@ export default function ItemAdmin({ onError }) {
               <span>Department</span>
               <select className="admin-input" value={form.department?.id || ""} onChange={(event) => setForm({ ...form, department: event.target.value ? { id: Number(event.target.value) } : null })} required>
                 <option value="">Select department</option>
-                {departments.map((department) => <option value={department.id} key={department.id}>{department.deptName}</option>)}
+                {selectableDepartments.map((department) => <option value={department.id} key={department.id}>{department.deptName}</option>)}
               </select>
             </label>
           </div>

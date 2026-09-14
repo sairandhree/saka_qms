@@ -29,7 +29,7 @@ public abstract class CrudController<T extends Identifiable<ID>, ID> {
     }
 
     @GetMapping
-    public List<T> findAll() {
+    public List<T> findAll(Authentication authentication) {
         return repository.findAll();
     }
 
