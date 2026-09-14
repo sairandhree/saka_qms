@@ -244,6 +244,108 @@ button {
   flex: 1;
 }
 
+.item-admin-toolbar {
+  display: flex;
+  align-items: end;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.item-filter-field {
+  flex: 1;
+}
+
+.primary-icon {
+  min-width: 42px;
+  min-height: 42px;
+  border-radius: 8px;
+  background: #2674b9;
+  color: #ffffff;
+  font-size: 1.5rem;
+}
+
+.item-admin-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.75fr) minmax(0, 2fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.item-list-panel,
+.item-editor-panel {
+  min-width: 0;
+  border: 1px solid #d0e0ef;
+  border-radius: 12px;
+  background: #fbfdff;
+}
+
+.item-list-panel {
+  max-height: 720px;
+  overflow: hidden;
+}
+
+.item-list-heading {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #d0e0ef;
+  background: #e5f1fb;
+  color: #2e5d85;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 12px 14px;
+  text-transform: uppercase;
+}
+
+.item-list {
+  max-height: 665px;
+  overflow-y: auto;
+}
+
+.item-list-entry {
+  display: grid;
+  width: 100%;
+  gap: 4px;
+  border: 0;
+  border-bottom: 1px solid #e0ebf4;
+  background: transparent;
+  color: #365873;
+  cursor: pointer;
+  padding: 12px 14px;
+  text-align: left;
+}
+
+.item-list-entry:hover,
+.item-list-entry.selected {
+  background: #e8f3fc;
+}
+
+.item-list-entry.selected {
+  box-shadow: inset 4px 0 #2674b9;
+}
+
+.item-list-entry strong {
+  color: #123b63;
+  font-size: 0.88rem;
+}
+
+.item-list-entry span {
+  color: #6c8294;
+  font-size: 0.75rem;
+}
+
+.item-editor-panel {
+  display: grid;
+  gap: 18px;
+  padding: 20px;
+}
+
+.editor-icon-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .table-actions {
   display: flex;
   flex-wrap: wrap;
@@ -422,6 +524,10 @@ button {
   border-radius: 10px;
   background: #fbfdff;
   padding: 12px;
+}
+
+.detail-editor-row .icon-button {
+  margin-bottom: 4px;
 }
 
 .remove-button {
@@ -873,6 +979,22 @@ button {
   .editor-select-row {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .item-admin-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .item-list-panel {
+    max-height: 300px;
+  }
+
+  .item-list {
+    max-height: 245px;
+  }
+
+  .item-admin-toolbar {
+    align-items: stretch;
   }
 
   .admin-tabs {

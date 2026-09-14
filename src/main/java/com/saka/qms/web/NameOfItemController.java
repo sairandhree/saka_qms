@@ -78,8 +78,12 @@ public class NameOfItemController {
         if (!accessControl.canManageChecklist(authentication)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        if (!repository.existsById(id)) {
+        NameOfItem existing = repository.findById(id).orElse(null);
+        if (existing == null) {
             return ResponseEntity.notFound().build();
+        }
+        if (!accessControl.canAccessItem(authentication, existing)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         entity.setId(id);
         if (!accessControl.canAccessItem(authentication, entity)) {

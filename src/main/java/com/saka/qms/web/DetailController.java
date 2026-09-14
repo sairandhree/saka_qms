@@ -70,8 +70,12 @@ public class DetailController {
         if (!accessControl.canManageChecklist(authentication)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        if (!repository.existsById(id)) {
+        Detail existing = repository.findById(id).orElse(null);
+        if (existing == null) {
             return ResponseEntity.notFound().build();
+        }
+        if (!accessControl.canAccessDetail(authentication, existing)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         if (!accessControl.canAccessItemId(authentication, entity.getRelatedItemId())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();

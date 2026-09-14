@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { request } from "../api";
 import { AdminCard, Field } from "../components/AdminShared";
 
@@ -12,13 +12,23 @@ const blankDetail = { id: null, details: "", note: "", parameters: "", sequence:
 export default function ItemAdmin({ onError }) {
   const [items, setItems] = useState([]);
   const [departments, setDepartments] = useState([]);
+  const [filterText, setFilterText] = useState("");
   const [form, setForm] = useState(blankItem);
   const [details, setDetails] = useState([]);
   const [busy, setBusy] = useState(false);
 
+  const filteredItems = useMemo(() => {
+    const filter = filterText.trim().toLowerCase();
+    if (!filter) return items;
+    return items.filter((item) => item.nameOfItem?.toLowerCase().includes(filter));
+  }, [filterText, items]);
+
   async function load() {
     try {
-      const [itemData, departmentData] = await Promise.all([request("/api/items"), request("/api/departments")]);
+      const [itemData, departmentData] = await Promise.all([
+        request("/api/items"),
+        request("/api/departments")
+      ]);
       setItems(itemData);
       setDepartments(departmentData);
     } catch (error) {
@@ -28,7 +38,7 @@ export default function ItemAdmin({ onError }) {
 
   useEffect(() => { load(); }, []);
 
-  async function editItem(item) {
+  async function selectItem(item) {
     setForm({ ...blankItem, ...item });
     try {
       const allDetails = await request("/api/details");
@@ -38,6 +48,11 @@ export default function ItemAdmin({ onError }) {
     }
   }
 
+  function startNewItem() {
+    setForm(blankItem);
+    setDetails([]);
+  }
+
   function updateDetail(index, field, value) {
     setDetails((current) => current.map((detail, detailIndex) =>
       detailIndex === index ? { ...detail, [field]: value } : detail
@@ -45,6 +60,10 @@ export default function ItemAdmin({ onError }) {
   }
 
   async function save() {
+    if (!form.nameOfItem.trim() || !form.department?.id) {
+      onError("Item name and department are required.");
+      return;
+    }
     setBusy(true);
     onError("");
     try {
@@ -53,7 +72,7 @@ export default function ItemAdmin({ onError }) {
         body: JSON.stringify({
           ...form,
           id: undefined,
-          department: form.department ? { id: form.department.id } : null
+          department: { id: form.department.id }
         })
       });
       for (const detail of details) {
@@ -62,7 +81,7 @@ export default function ItemAdmin({ onError }) {
           body: JSON.stringify({ ...detail, id: undefined, relatedItemId: item.id })
         });
       }
-      setForm({ ...blankItem, id: item.id });
+      setForm({ ...blankItem, ...item });
       await load();
     } catch (error) {
       onError(error.message);
@@ -75,8 +94,7 @@ export default function ItemAdmin({ onError }) {
     if (!form.id || !window.confirm(`Delete item "${form.nameOfItem}"?`)) return;
     try {
       await request(`/api/items/${form.id}`, { method: "DELETE" });
-      setForm(blankItem);
-      setDetails([]);
+      startNewItem();
       await load();
     } catch (error) {
       onError(error.message);
@@ -94,58 +112,103 @@ export default function ItemAdmin({ onError }) {
 
   return (
     <AdminCard title="Checklist item and details" eyebrow="CHECKLIST CONTENT">
-      <div className="admin-form">
-        <label className="field-label">Edit existing item</label>
-        <div className="editor-select-row">
-          <select className="admin-input" value={form.id || ""} onChange={(event) => {
-            const item = items.find((candidate) => candidate.id === Number(event.target.value));
-            if (item) editItem(item);
-            else { setForm(blankItem); setDetails([]); }
-          }}>
-            <option value="">Create a new item</option>
-            {items.map((item) => <option value={item.id} key={item.id}>{item.nameOfItem}</option>)}
-          </select>
-          {form.id && <button className="remove-button" type="button" onClick={removeItem}>Delete item</button>}
-        </div>
-        <div className="form-grid two">
-          <Field label="Item name" value={form.nameOfItem} onChange={(value) => setForm({ ...form, nameOfItem: value })} required />
-          <label className="admin-field">
-            <span>Department</span>
-            <select className="admin-input" value={form.department?.id || ""} onChange={(event) => setForm({ ...form, department: event.target.value ? { id: Number(event.target.value) } : null })} required>
-              <option value="">Select department</option>
-              {departments.map((department) => <option value={department.id} key={department.id}>{department.deptName}</option>)}
-            </select>
-          </label>
-        </div>
-        <Field label="Note" value={form.note} onChange={(value) => setForm({ ...form, note: value })} />
-        <div className="code-editor-grid">
-          {Array.from({ length: 5 }, (_, index) => {
-            const number = index + 1;
-            return (
-              <div className="code-editor-pair" key={number}>
-                <Field label={`Code ${number}`} value={form[`code${number}`]} onChange={(value) => setForm({ ...form, [`code${number}`]: value })} />
-                <Field label={`Code info ${number}`} value={form[`cdinf${number}`]} onChange={(value) => setForm({ ...form, [`cdinf${number}`]: value })} />
-              </div>
-            );
-          })}
-        </div>
-        <div className="detail-editor">
-          <div className="editor-heading">
-            <div><p className="eyebrow">INSPECTION DETAILS</p><h3>Details</h3></div>
-            <button className="secondary-button" type="button" onClick={() => setDetails([...details, { ...blankDetail, sequence: details.length + 1 }])}>Add detail</button>
-          </div>
-          {details.map((detail, index) => (
-            <div className="detail-editor-row" key={detail.id || `new-${index}`}>
-              <Field label="Detail" value={detail.details} onChange={(value) => updateDetail(index, "details", value)} />
-              <Field label="Note" value={detail.note} onChange={(value) => updateDetail(index, "note", value)} />
-              <Field label="Parameters" value={detail.parameters} onChange={(value) => updateDetail(index, "parameters", value)} />
-              <button className="remove-button" type="button" onClick={() => removeDetail(index, detail)}>Delete</button>
-            </div>
-          ))}
-        </div>
-        <button className="primary-button admin-save" type="button" onClick={save} disabled={busy}>
-          {busy ? "Saving..." : form.id ? "Update item and details" : "Create item and details"}
+      <div className="item-admin-toolbar">
+        <label className="admin-field item-filter-field">
+          <span>Filter items</span>
+          <input
+            className="admin-input"
+            value={filterText}
+            onChange={(event) => setFilterText(event.target.value)}
+            placeholder="Type to filter the item list..."
+          />
+        </label>
+        <button className="icon-button primary-icon" type="button" onClick={startNewItem} aria-label="Create new item" title="Create new item">
+          ＋
         </button>
+      </div>
+
+      <div className="item-admin-layout">
+        <aside className="item-list-panel">
+          <div className="item-list-heading">
+            <span>Items</span>
+            <span>{filteredItems.length}</span>
+          </div>
+          <div className="item-list">
+            {filteredItems.map((item) => (
+              <button
+                className={`item-list-entry ${form.id === item.id ? "selected" : ""}`}
+                type="button"
+                key={item.id}
+                onClick={() => selectItem(item)}
+              >
+                <strong>{item.nameOfItem || "Unnamed item"}</strong>
+                <span>{item.department?.deptName || "No department"}</span>
+              </button>
+            ))}
+            {filteredItems.length === 0 && <p className="empty-state">No matching items.</p>}
+          </div>
+        </aside>
+
+        <section className="item-editor-panel">
+          <div className="editor-heading">
+            <div>
+              <p className="eyebrow">{form.id ? "EDIT ITEM" : "NEW ITEM"}</p>
+              <h3>{form.nameOfItem || "Create a checklist item"}</h3>
+            </div>
+            <div className="editor-icon-actions">
+              {form.id && (
+                <button className="icon-button delete-icon" type="button" onClick={removeItem} aria-label="Delete item" title="Delete item">
+                  🗑
+                </button>
+              )}
+              <button className="icon-button save-icon" type="button" onClick={save} disabled={busy} aria-label="Save item and details" title="Save item and details">
+                ✓
+              </button>
+            </div>
+          </div>
+
+          <div className="form-grid two">
+            <Field label="Item name" value={form.nameOfItem} onChange={(value) => setForm({ ...form, nameOfItem: value })} required />
+            <label className="admin-field">
+              <span>Department</span>
+              <select className="admin-input" value={form.department?.id || ""} onChange={(event) => setForm({ ...form, department: event.target.value ? { id: Number(event.target.value) } : null })} required>
+                <option value="">Select department</option>
+                {departments.map((department) => <option value={department.id} key={department.id}>{department.deptName}</option>)}
+              </select>
+            </label>
+          </div>
+          <Field label="Note" value={form.note} onChange={(value) => setForm({ ...form, note: value })} />
+          <div className="code-editor-grid">
+            {Array.from({ length: 5 }, (_, index) => {
+              const number = index + 1;
+              return (
+                <div className="code-editor-pair" key={number}>
+                  <Field label={`Code ${number}`} value={form[`code${number}`]} onChange={(value) => setForm({ ...form, [`code${number}`]: value })} />
+                  <Field label={`Code info ${number}`} value={form[`cdinf${number}`]} onChange={(value) => setForm({ ...form, [`cdinf${number}`]: value })} />
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="detail-editor">
+            <div className="editor-heading">
+              <div><p className="eyebrow">INSPECTION DETAILS</p><h3>Details</h3></div>
+              <button className="icon-button primary-icon" type="button" onClick={() => setDetails([...details, { ...blankDetail, sequence: details.length + 1 }])} aria-label="Add detail" title="Add detail">
+                ＋
+              </button>
+            </div>
+            {details.map((detail, index) => (
+              <div className="detail-editor-row" key={detail.id || `new-${index}`}>
+                <Field label="Detail" value={detail.details} onChange={(value) => updateDetail(index, "details", value)} />
+                <Field label="Note" value={detail.note} onChange={(value) => updateDetail(index, "note", value)} />
+                <Field label="Parameters" value={detail.parameters} onChange={(value) => updateDetail(index, "parameters", value)} />
+                <button className="icon-button delete-icon" type="button" onClick={() => removeDetail(index, detail)} aria-label="Delete detail" title="Delete detail">
+                  🗑
+                </button>
+              </div>
+            ))}
+          </div>
+        </section>
       </div>
     </AdminCard>
   );
