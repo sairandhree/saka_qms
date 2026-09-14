@@ -45,6 +45,8 @@ public class NameOfItem implements Identifiable<Integer>, Auditable {
     private LocalDateTime modifiedOn;
     @Column(name = "authorised_by")
     private String authorisedBy;
+    @Column(name = "isdeleted")
+    private Boolean isDeleted = false;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "dept_id")
@@ -88,6 +90,8 @@ public class NameOfItem implements Identifiable<Integer>, Auditable {
     public void setModifiedOn(LocalDateTime modifiedOn) { this.modifiedOn = modifiedOn; }
     public String getAuthorisedBy() { return authorisedBy; }
     public void setAuthorisedBy(String authorisedBy) { this.authorisedBy = authorisedBy; }
+    public Boolean getIsDeleted() { return isDeleted; }
+    public void setIsDeleted(Boolean isDeleted) { this.isDeleted = isDeleted; }
     public Department getDepartment() { return department; }
     public void setDepartment(Department department) { this.department = department; }
     public List<Detail> getDetails() { return details; }

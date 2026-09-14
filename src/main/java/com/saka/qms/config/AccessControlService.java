@@ -18,6 +18,9 @@ public class AccessControlService {
     }
 
     public boolean canAccessItem(Authentication authentication, NameOfItem item) {
+        if (item == null || Boolean.TRUE.equals(item.getIsDeleted())) {
+            return false;
+        }
         if (isAdmin(authentication)) {
             return true;
         }
@@ -37,6 +40,7 @@ public class AccessControlService {
             return false;
         }
         return itemRepository.findById(itemId)
+                .filter(item -> !Boolean.TRUE.equals(item.getIsDeleted()))
                 .map(item -> canAccessItem(authentication, item))
                 .orElse(false);
     }

@@ -48,6 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String username = jwtService.extractUsername(token);
             Boolean tokenAdmin = jwtService.extractIsAdmin(token);
             employeeRepository.findByUsername(username)
+                    .filter(employee -> !Boolean.TRUE.equals(employee.getIsDeleted()))
                     .filter(employee -> jwtService.isValid(token, employee.getUsername()))
                     .ifPresent(employee -> setAuthentication(employee, tokenAdmin, request));
         } catch (JwtException | IllegalArgumentException exception) {

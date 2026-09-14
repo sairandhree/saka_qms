@@ -33,6 +33,7 @@ public class DetailController {
     @GetMapping
     public List<Detail> findAll(Authentication authentication) {
         return repository.findAll().stream()
+                .filter(detail -> !Boolean.TRUE.equals(detail.getIsDeleted()))
                 .filter(detail -> accessControl.canAccessDetail(authentication, detail))
                 .toList();
     }
@@ -42,6 +43,7 @@ public class DetailController {
             @PathVariable Integer id,
             Authentication authentication) {
         return repository.findById(id)
+                .filter(detail -> !Boolean.TRUE.equals(detail.getIsDeleted()))
                 .filter(detail -> accessControl.canAccessDetail(authentication, detail))
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -58,6 +60,7 @@ public class DetailController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         entity.setId(null);
+        entity.setIsDeleted(false);
         AuditSupport.apply(entity, authentication);
         return ResponseEntity.ok(repository.save(entity));
     }
@@ -70,7 +73,9 @@ public class DetailController {
         if (!accessControl.canManageChecklist(authentication)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        Detail existing = repository.findById(id).orElse(null);
+        Detail existing = repository.findById(id)
+                .filter(detail -> !Boolean.TRUE.equals(detail.getIsDeleted()))
+                .orElse(null);
         if (existing == null) {
             return ResponseEntity.notFound().build();
         }
@@ -81,6 +86,7 @@ public class DetailController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         entity.setId(id);
+        entity.setIsDeleted(false);
         AuditSupport.apply(entity, authentication);
         return ResponseEntity.ok(repository.save(entity));
     }
@@ -92,14 +98,18 @@ public class DetailController {
             if (!accessControl.canManageChecklist(authentication)) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
-            Detail detail = repository.findById(id).orElse(null);
+            Detail detail = repository.findById(id)
+                    .filter(candidate -> !Boolean.TRUE.equals(candidate.getIsDeleted()))
+                    .orElse(null);
         if (detail == null) {
             return ResponseEntity.notFound().build();
         }
         if (!accessControl.canAccessDetail(authentication, detail)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-        repository.delete(detail);
+        detail.setIsDeleted(true);
+        AuditSupport.apply(detail, authentication);
+        repository.save(detail);
         return ResponseEntity.noContent().build();
     }
 }

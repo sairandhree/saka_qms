@@ -68,7 +68,9 @@ public abstract class CrudController<T extends Identifiable<ID>, ID> {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable ID id) {
+    public ResponseEntity<Void> delete(
+            @PathVariable ID id,
+            Authentication authentication) {
         if (!repository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }

@@ -36,6 +36,8 @@ public class Detail implements Identifiable<Integer>, Auditable {
     private String authorisedBy;
     @Column(name = "modified_on")
     private LocalDateTime modifiedOn;
+    @Column(name = "isdeleted")
+    private Boolean isDeleted = false;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -64,6 +66,8 @@ public class Detail implements Identifiable<Integer>, Auditable {
     public void setAuthorisedBy(String authorisedBy) { this.authorisedBy = authorisedBy; }
     public LocalDateTime getModifiedOn() { return modifiedOn; }
     public void setModifiedOn(LocalDateTime modifiedOn) { this.modifiedOn = modifiedOn; }
+    public Boolean getIsDeleted() { return isDeleted; }
+    public void setIsDeleted(Boolean isDeleted) { this.isDeleted = isDeleted; }
     public NameOfItem getItem() { return item; }
     public void setItem(NameOfItem item) { this.item = item; }
 }

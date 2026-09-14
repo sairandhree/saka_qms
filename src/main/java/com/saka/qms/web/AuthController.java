@@ -36,7 +36,8 @@ public class AuthController {
 
         Optional<Employee> authenticatedEmployee = employeeRepository.findByUsername(request.username())
                 .filter(employee -> employee.getPassword() != null
-                        && passwordEncoder.matches(request.password(), employee.getPassword()));
+                        && passwordEncoder.matches(request.password(), employee.getPassword()))
+                .filter(employee -> !Boolean.TRUE.equals(employee.getIsDeleted()));
         if (authenticatedEmployee.isEmpty()) {
             return unauthorized();
         }

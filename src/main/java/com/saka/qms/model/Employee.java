@@ -38,6 +38,9 @@ public class Employee implements Identifiable<Integer>, Auditable {
     private Boolean isAdmin;
     @Column(name = "is_department_head")
     private Boolean isDepartmentHead;
+    @JsonIgnore
+    @Column(name = "isdeleted")
+    private Boolean isDeleted = false;
     @Column(name = "modified_by")
     private String modifiedBy;
     @Column(name = "modified_on")
@@ -65,6 +68,8 @@ public class Employee implements Identifiable<Integer>, Auditable {
     public void setIsAdmin(Boolean isAdmin) { this.isAdmin = isAdmin; }
     public Boolean getIsDepartmentHead() { return isDepartmentHead; }
     public void setIsDepartmentHead(Boolean isDepartmentHead) { this.isDepartmentHead = isDepartmentHead; }
+    public Boolean getIsDeleted() { return isDeleted; }
+    public void setIsDeleted(Boolean isDeleted) { this.isDeleted = isDeleted; }
     public String getModifiedBy() { return modifiedBy; }
     public void setModifiedBy(String modifiedBy) { this.modifiedBy = modifiedBy; }
     public LocalDateTime getModifiedOn() { return modifiedOn; }
