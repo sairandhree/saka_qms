@@ -59,7 +59,7 @@ public class DepartmentController {
         Department department = new Department();
         department.setDeptName(request.deptName());
         AuditSupport.apply(department, authentication);
-        logger.info("action=department.create actor={} departmentName={}",
+        logger.info("User '{}' is creating department with values: departmentName='{}'",
                 AuditSupport.actorName(authentication), request.deptName());
         return ResponseEntity.ok(repository.save(department));
     }
@@ -78,7 +78,7 @@ public class DepartmentController {
         }
         department.setDeptName(request.deptName());
         AuditSupport.apply(department, authentication);
-        logger.info("action=department.update actor={} departmentId={} departmentName={}",
+        logger.info("User '{}' is updating department id={} with values: departmentName='{}'",
                 AuditSupport.actorName(authentication), id, request.deptName());
         return ResponseEntity.ok(repository.save(department));
     }
@@ -93,7 +93,7 @@ public class DepartmentController {
         if (!repository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
-        logger.info("action=department.delete actor={} departmentId={}",
+        logger.info("User '{}' is deleting department id={}",
                 AuditSupport.actorName(authentication), id);
         repository.deleteById(id);
         return ResponseEntity.noContent().build();

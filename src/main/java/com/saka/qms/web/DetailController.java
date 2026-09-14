@@ -90,8 +90,8 @@ public class DetailController {
         detail.setRelatedItemId(itemId);
         detail.setIsDeleted(false);
         AuditSupport.apply(detail, authentication);
-        logger.info("action=detail.create actor={} itemId={} detailId={} sequence={}",
-                AuditSupport.actorName(authentication), itemId, request.id(), request.sequence());
+        logger.info("User '{}' is creating detail for item id={} with values: sequence={}, detailId={}",
+                AuditSupport.actorName(authentication), itemId, request.sequence(), request.id());
         return ResponseEntity.ok(repository.save(detail));
     }
 
@@ -115,7 +115,7 @@ public class DetailController {
         copyRequest(request, detail);
         detail.setIsDeleted(false);
         AuditSupport.apply(detail, authentication);
-        logger.info("action=detail.update actor={} detailId={} itemId={} sequence={}",
+        logger.info("User '{}' is updating detail id={} for item id={} with values: sequence={}",
                 AuditSupport.actorName(authentication), id, detail.getRelatedItemId(), request.sequence());
         return ResponseEntity.ok(repository.save(detail));
     }
@@ -138,7 +138,7 @@ public class DetailController {
         }
         detail.setIsDeleted(true);
         AuditSupport.apply(detail, authentication);
-        logger.info("action=detail.delete actor={} detailId={} itemId={}",
+        logger.info("User '{}' is deleting detail id={} for item id={}",
                 AuditSupport.actorName(authentication), id, detail.getRelatedItemId());
         repository.save(detail);
         return ResponseEntity.noContent().build();

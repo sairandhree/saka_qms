@@ -62,7 +62,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             HttpServletRequest request) {
             boolean isAdmin = Boolean.TRUE.equals(employee.getIsAdmin());
             String role = isAdmin ? "ROLE_ADMIN" : "ROLE_EMPLOYEE";
-            logger.info("Authenticated username={} with role={} (dbIsAdmin={}, tokenIsAdmin={})",
+            logger.debug("Authenticated username={} with role={} (dbIsAdmin={}, tokenIsAdmin={})",
                     employee.getUsername(), role, employee.getIsAdmin(), tokenAdmin);
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(

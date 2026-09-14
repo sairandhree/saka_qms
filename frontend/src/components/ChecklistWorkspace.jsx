@@ -87,7 +87,16 @@ export default function ChecklistWorkspace({ user, onLogout, embedded = false })
           <label htmlFor="item-search">Search checklist items</label>
           <div className="search-row">
             <input id="item-search" className="search-input" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Type at least 3 characters..." maxLength={150} />
-            <button className="print-button" onClick={() => window.print()} disabled={!selectedItem}>Print</button>
+            <button
+              className="icon-button primary-icon print-icon"
+              type="button"
+              onClick={() => window.print()}
+              disabled={!selectedItem}
+              aria-label="Print checklist"
+              title="Print checklist"
+            >
+              🖨
+            </button>
           </div>
           <p className="search-hint">Search starts after three characters and updates as you type.</p>
           {loading && <p className="muted">Searching...</p>}

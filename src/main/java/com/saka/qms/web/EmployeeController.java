@@ -87,7 +87,7 @@ public class EmployeeController {
         employee.setPassword(passwordEncoder.encode(request.password()));
         employee.setIsDeleted(false);
         AuditSupport.apply(employee, authentication);
-        logger.info("action=employee.create actor={} username={} employeeName={} departmentIds={} isAdmin={} isDepartmentHead={}",
+        logger.info("User '{}' is creating employee '{}' with values: employeeName='{}', departmentIds={}, isAdmin={}, isDepartmentHead={}",
                 AuditSupport.actorName(authentication), request.username(), request.employeeName(),
                 request.departmentIds(), request.isAdmin(), request.isDepartmentHead());
         return ResponseEntity.ok(repository.save(employee));
@@ -114,8 +114,8 @@ public class EmployeeController {
         }
         employee.setIsDeleted(false);
         AuditSupport.apply(employee, authentication);
-        logger.info("action=employee.update actor={} employeeId={} username={} employeeName={} departmentIds={} isAdmin={} isDepartmentHead={}",
-                AuditSupport.actorName(authentication), id, employee.getUsername(), request.employeeName(),
+        logger.info("User '{}' is updating employee '{}' (id={}) with values: employeeName='{}', departmentIds={}, isAdmin={}, isDepartmentHead={}",
+                AuditSupport.actorName(authentication), employee.getUsername(), id, request.employeeName(),
                 request.departmentIds(), request.isAdmin(), request.isDepartmentHead());
         return ResponseEntity.ok(repository.save(employee));
     }
@@ -138,8 +138,8 @@ public class EmployeeController {
         }
         employee.setIsDeleted(true);
         AuditSupport.apply(employee, authentication);
-        logger.info("action=employee.delete actor={} employeeId={} username={}",
-                AuditSupport.actorName(authentication), id, employee.getUsername());
+        logger.info("User '{}' is deleting employee '{}' (id={})",
+                AuditSupport.actorName(authentication), employee.getUsername(), id);
         repository.save(employee);
         return ResponseEntity.noContent().build();
     }

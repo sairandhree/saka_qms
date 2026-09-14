@@ -149,7 +149,15 @@ export default function EmployeeAdmin({ onError }) {
     <AdminCard title="Employees" eyebrow="USER ACCESS">
       <div className="admin-toolbar">
         <p className="muted">Edit employee details directly in the table.</p>
-        <button className="primary-button" type="button" onClick={() => setCreateOpen(true)}>Add employee</button>
+        <button
+          className="icon-button primary-icon"
+          type="button"
+          onClick={() => setCreateOpen(true)}
+          aria-label="Add employee"
+          title="Add employee"
+        >
+          ＋
+        </button>
       </div>
       <AdminTable headers={["Employee", "Username", "Admin", "Dept. head", "Departments", "Actions"]}>
         {employees.map((employee) => {
@@ -194,8 +202,23 @@ export default function EmployeeAdmin({ onError }) {
           <form className="admin-form" onSubmit={createEmployee}>
             {renderEditor(createDraft, setCreateDraft, true)}
             <div className="form-actions">
-              <button className="primary-button" disabled={busy}>{busy ? "Saving..." : "Save employee"}</button>
-              <button className="secondary-button" type="button" onClick={() => setCreateOpen(false)}>Cancel</button>
+              <button
+                className="icon-button save-icon"
+                disabled={busy}
+                aria-label="Save employee"
+                title={busy ? "Saving..." : "Save employee"}
+              >
+                ✓
+              </button>
+              <button
+                className="icon-button"
+                type="button"
+                onClick={() => setCreateOpen(false)}
+                aria-label="Cancel"
+                title="Cancel"
+              >
+                ×
+              </button>
             </div>
           </form>
         </Modal>

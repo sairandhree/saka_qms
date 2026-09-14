@@ -67,8 +67,9 @@ public class ChecklistItemService {
         item.setDepartment(department);
         item.setIsDeleted(false);
         AuditSupport.apply(item, authentication);
-        logger.info("action=checklist.save actor={} itemId={} itemName={} departmentId={} detailCount={} detailIds={}",
-                AuditSupport.actorName(authentication), itemId, request.item().nameOfItem(),
+        logger.info("User '{}' is {} checklist item '{}'{} with values: departmentId={}, detailCount={}, detailIds={}",
+                AuditSupport.actorName(authentication), itemId == null ? "creating" : "updating",
+                request.item().nameOfItem(), itemId == null ? "" : " (id=" + itemId + ")",
                 request.item().departmentId(), request.details().size(),
                 request.details().stream().map(DetailRequest::id).filter(id -> id != null).toList());
         NameOfItem savedItem = itemRepository.save(item);
@@ -127,8 +128,10 @@ public class ChecklistItemService {
         copyItem(request, item);
         item.setIsDeleted(false);
         AuditSupport.apply(item, authentication);
-        logger.info("action=checklist.item.save actor={} itemId={} itemName={} departmentId={}",
-                AuditSupport.actorName(authentication), itemId, request.nameOfItem(), request.departmentId());
+        logger.info("User '{}' is {} checklist item '{}'{} with values: departmentId={}",
+                AuditSupport.actorName(authentication), itemId == null ? "creating" : "updating",
+                request.nameOfItem(), itemId == null ? "" : " (id=" + itemId + ")",
+                request.departmentId());
         return itemRepository.save(item);
     }
 

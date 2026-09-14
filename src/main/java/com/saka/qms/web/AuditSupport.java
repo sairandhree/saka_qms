@@ -29,6 +29,13 @@ public final class AuditSupport {
                 && !employee.getUsername().isBlank()) {
             return employee.getUsername();
         }
+        if (authentication.getPrincipal() instanceof Employee employee
+                && employee.getId() != null) {
+            return "employee:" + employee.getId();
+        }
+        if (authentication.getPrincipal() instanceof Employee) {
+            return "unknown-employee";
+        }
         return authentication.getName();
     }
 }

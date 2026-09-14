@@ -120,8 +120,8 @@ public class NameOfItemController {
         }
         item.setIsDeleted(true);
         AuditSupport.apply(item, authentication);
-        logger.info("action=item.delete actor={} itemId={} itemName={} departmentId={}",
-                AuditSupport.actorName(authentication), id, item.getNameOfItem(),
+        logger.info("User '{}' is deleting checklist item '{}' (id={}) from department id={}",
+                AuditSupport.actorName(authentication), item.getNameOfItem(), id,
                 item.getDepartment() == null ? null : item.getDepartment().getId());
         repository.save(item);
         return ResponseEntity.noContent().build();
