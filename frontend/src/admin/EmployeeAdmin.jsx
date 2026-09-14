@@ -154,6 +154,7 @@ export default function EmployeeAdmin({ onError }) {
       <AdminTable headers={["Employee", "Username", "Admin", "Dept. head", "Departments", "Actions"]}>
         {employees.map((employee) => {
           const editing = editingId === employee.id;
+          const protectedEmployee = employee.id === 1 && employee.username?.toLowerCase() === "anand";
           return (
             <tr key={employee.id}>
               {editing ? (
@@ -182,7 +183,7 @@ export default function EmployeeAdmin({ onError }) {
                     ✎
                   </button>
                 )}
-                <button className="icon-button delete-icon" type="button" onClick={() => remove(employee)} aria-label={`Delete ${employee.username}`} title="Delete">🗑</button>
+                <button className="icon-button delete-icon" type="button" onClick={() => remove(employee)} disabled={protectedEmployee} aria-label={`Delete ${employee.username}`} title={protectedEmployee ? "This employee cannot be deleted" : "Delete"}>🗑</button>
               </td>
             </tr>
           );

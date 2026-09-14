@@ -2,6 +2,7 @@ package com.saka.qms.web;
 
 import com.saka.qms.model.Employee;
 import com.saka.qms.repository.EmployeeRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.Authentication;
@@ -53,6 +54,9 @@ public class EmployeeController extends CrudController<Employee, Integer> {
         if (employee == null) {
             return ResponseEntity.notFound().build();
         }
+        if (isProtectedEmployee(employee)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         employee.setIsDeleted(true);
         AuditSupport.apply(employee, authentication);
         repository.save(employee);
@@ -94,5 +98,10 @@ public class EmployeeController extends CrudController<Employee, Integer> {
         return password.startsWith("$2a$")
                 || password.startsWith("$2b$")
                 || password.startsWith("$2y$");
+    }
+
+    private boolean isProtectedEmployee(Employee employee) {
+        return Integer.valueOf(1).equals(employee.getId())
+                && "anand".equalsIgnoreCase(employee.getUsername());
     }
 }

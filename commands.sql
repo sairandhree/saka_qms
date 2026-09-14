@@ -56,7 +56,36 @@ ALTER SEQUENCE qms_checklist.employees_id_seq
 
 INSERT INTO qms_checklist.employees (emp_id,emp_name,username,password,isadmin)
 VALUES (1,'Anand Thigale','anand','$2a$10$rCCT1yBmksJ6xYYSKGt2NOtyqHDXPNFS1rMyg2HCUJwISQS3IB5TO',true);
-
+--
+-- -- Keep the primary administrator from being deleted, including soft deletes.
+-- CREATE OR REPLACE FUNCTION qms_checklist.prevent_protected_employee_delete()
+-- RETURNS TRIGGER
+-- LANGUAGE plpgsql
+-- AS $$
+-- BEGIN
+--     IF OLD.id = 1
+--        AND lower(COALESCE(OLD.username, '')) = 'anand'
+--        AND (
+--            TG_OP = 'DELETE'
+--            OR (TG_OP = 'UPDATE' AND NEW.isdeleted IS TRUE)
+--        ) THEN
+--         RAISE EXCEPTION 'Employee id 1 (anand) cannot be deleted';
+--     END IF;
+--
+--     IF TG_OP = 'DELETE' THEN
+--         RETURN OLD;
+--     END IF;
+--     RETURN NEW;
+-- END;
+-- $$;
+--
+-- DROP TRIGGER IF EXISTS protect_anand_employee ON qms_checklist.employees;
+-- CREATE TRIGGER protect_anand_employee
+--     BEFORE DELETE OR UPDATE OF isdeleted
+--     ON qms_checklist.employees
+--     FOR EACH ROW
+--     EXECUTE FUNCTION qms_checklist.prevent_protected_employee_delete();
+--
 
 
 CREATE TABLE qms_checklist.employee_departments (
