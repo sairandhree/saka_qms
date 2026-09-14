@@ -8,17 +8,31 @@ export function AdminCard({ eyebrow, title, children }) {
   );
 }
 
-export function Field({ label, value, onChange, type = "text", required = false, disabled = false }) {
+export function Field({
+  label,
+  value,
+  onChange,
+  type = "text",
+  required = false,
+  disabled = false,
+  min,
+  max,
+  step,
+  className = "admin-input"
+}) {
   return (
     <label className="admin-field">
       <span>{label}</span>
       <input
-        className="admin-input"
+        className={className}
         type={type}
         value={value ?? ""}
         onChange={(event) => onChange(event.target.value)}
         required={required}
         disabled={disabled}
+        min={min}
+        max={max}
+        step={step}
       />
     </label>
   );

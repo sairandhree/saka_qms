@@ -163,7 +163,6 @@ CREATE TABLE qms_checklist.details (
                                        rel_id INTEGER,
                                        link TEXT,
                                        sequence INTEGER,
-                                       passward VARCHAR(50),
                                        isdeleted BOOLEAN DEFAULT FALSE,
                                        modified_by VARCHAR(50),
                                        modified_on TIMESTAMP,

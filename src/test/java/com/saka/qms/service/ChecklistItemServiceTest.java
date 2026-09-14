@@ -69,7 +69,7 @@ class ChecklistItemServiceTest {
 
         assertThrows(AccessDeniedException.class,
                 () -> service.save(null, new ChecklistSaveRequest(
-                        itemRequest, List.of(new DetailRequest(null, "detail", null, null, null, 1, null))),
+                        itemRequest, List.of(new DetailRequest(null, "detail", null, null, null, 1))),
                         unauthorized));
         verifyNoInteractions(itemRepository, detailRepository, departmentRepository);
     }

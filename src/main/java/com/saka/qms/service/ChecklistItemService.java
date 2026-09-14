@@ -181,8 +181,5 @@ public class ChecklistItemService {
         target.setParameters(source.parameters());
         target.setLink(source.link());
         target.setSequence(source.sequence());
-        if (source.passward() != null) {
-            target.setPassward(source.passward());
-        }
     }
 }

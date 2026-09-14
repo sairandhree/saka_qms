@@ -6,6 +6,5 @@ public record DetailRequest(
         String note,
         String parameters,
         String link,
-        Integer sequence,
-        String passward) {
+        Integer sequence) {
 }

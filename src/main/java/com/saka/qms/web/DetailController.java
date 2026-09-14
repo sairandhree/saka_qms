@@ -150,8 +150,5 @@ public class DetailController {
         detail.setParameters(request.parameters());
         detail.setLink(request.link());
         detail.setSequence(request.sequence());
-        if (request.passward() != null) {
-            detail.setPassward(request.passward());
-        }
     }
 }

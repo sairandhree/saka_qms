@@ -9,6 +9,16 @@ const blankItem = {
 };
 const blankDetail = { id: null, details: "", note: "", parameters: "", sequence: 1 };
 
+function sortDetailsBySequence(details) {
+  return [...details].sort((first, second) => {
+    const firstSequence = Number(first.sequence);
+    const secondSequence = Number(second.sequence);
+    const firstValue = Number.isFinite(firstSequence) ? firstSequence : Number.POSITIVE_INFINITY;
+    const secondValue = Number.isFinite(secondSequence) ? secondSequence : Number.POSITIVE_INFINITY;
+    return firstValue - secondValue || (first.id ?? 0) - (second.id ?? 0);
+  });
+}
+
 export default function ItemAdmin({ onError }) {
   const [items, setItems] = useState([]);
   const [departments, setDepartments] = useState([]);
@@ -47,7 +57,7 @@ export default function ItemAdmin({ onError }) {
     setDetails([]);
     try {
       const itemDetails = await request(`/api/details/item/${item.id}`);
-      if (selection === selectionRef.current) setDetails(itemDetails);
+      if (selection === selectionRef.current) setDetails(sortDetailsBySequence(itemDetails));
     } catch (error) {
       if (selection === selectionRef.current) onError(error.message);
     }
@@ -96,7 +106,7 @@ export default function ItemAdmin({ onError }) {
         })
       });
       setForm({ ...blankItem, ...response.item });
-      setDetails(response.details || []);
+      setDetails(sortDetailsBySequence(response.details || []));
       await load();
     } catch (error) {
       onError(error.message);
@@ -212,6 +222,13 @@ export default function ItemAdmin({ onError }) {
                 <Field label="Detail" value={detail.details} onChange={(value) => updateDetail(index, "details", value)} />
                 <Field label="Note" value={detail.note} onChange={(value) => updateDetail(index, "note", value)} />
                 <Field label="Parameters" value={detail.parameters} onChange={(value) => updateDetail(index, "parameters", value)} />
+                <Field
+                  label="Sequence"
+                  value={detail.sequence}
+                  type="number"
+                  className="admin-input detail-sequence-input"
+                  onChange={(value) => updateDetail(index, "sequence", value === "" ? null : Number(value))}
+                />
                 <button className="icon-button delete-icon" type="button" onClick={() => removeDetail(index, detail)} aria-label="Delete detail" title="Delete detail">
                   🗑
                 </button>

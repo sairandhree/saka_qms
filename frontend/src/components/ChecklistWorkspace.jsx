@@ -2,6 +2,16 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { request } from "../api";
 import BrandLogo from "./BrandLogo";
 
+function sortDetailsBySequence(details) {
+  return [...details].sort((first, second) => {
+    const firstSequence = Number(first.sequence);
+    const secondSequence = Number(second.sequence);
+    const firstValue = Number.isFinite(firstSequence) ? firstSequence : Number.POSITIVE_INFINITY;
+    const secondValue = Number.isFinite(secondSequence) ? secondSequence : Number.POSITIVE_INFINITY;
+    return firstValue - secondValue || (first.id ?? 0) - (second.id ?? 0);
+  });
+}
+
 export default function ChecklistWorkspace({ user, onLogout, embedded = false }) {
   const [query, setQuery] = useState("");
   const [matches, setMatches] = useState([]);
@@ -52,7 +62,7 @@ export default function ChecklistWorkspace({ user, onLogout, embedded = false })
     try {
       const itemDetails = await request(`/api/details/item/${item.id}`);
       if (selection === selectionRef.current) {
-        setDetails(itemDetails);
+        setDetails(sortDetailsBySequence(itemDetails));
       }
     } catch (detailsError) {
       if (selection === selectionRef.current) setError(detailsError.message);
