@@ -80,7 +80,7 @@ export default function EmployeeAdmin({ onError }) {
           password: employee.password || undefined,
           isAdmin: employee.isAdmin,
           isDepartmentHead: employee.isDepartmentHead,
-          departments: employee.departments
+          departmentIds: employee.departments.map((department) => department.id)
         })
       });
       setEditingId(null);
@@ -106,7 +106,7 @@ export default function EmployeeAdmin({ onError }) {
           password: createDraft.password,
           isAdmin: createDraft.isAdmin,
           isDepartmentHead: createDraft.isDepartmentHead,
-          departments: createDraft.departments
+          departmentIds: createDraft.departments.map((department) => department.id)
         })
       });
       setCreateOpen(false);
@@ -154,7 +154,7 @@ export default function EmployeeAdmin({ onError }) {
       <AdminTable headers={["Employee", "Username", "Admin", "Dept. head", "Departments", "Actions"]}>
         {employees.map((employee) => {
           const editing = editingId === employee.id;
-          const protectedEmployee = employee.id === 1 && employee.username?.toLowerCase() === "anand";
+          const protectedEmployee = employee.id === 1;
           return (
             <tr key={employee.id}>
               {editing ? (

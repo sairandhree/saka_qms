@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { request } from "../api";
 import { AdminCard, Field } from "../components/AdminShared";
 
@@ -16,6 +16,7 @@ export default function ItemAdmin({ onError }) {
   const [form, setForm] = useState(blankItem);
   const [details, setDetails] = useState([]);
   const [busy, setBusy] = useState(false);
+  const selectionRef = useRef(0);
 
   const filteredItems = useMemo(() => {
     const filter = filterText.trim().toLowerCase();
@@ -41,16 +42,19 @@ export default function ItemAdmin({ onError }) {
   useEffect(() => { load(); }, []);
 
   async function selectItem(item) {
+    const selection = ++selectionRef.current;
     setForm({ ...blankItem, ...item });
+    setDetails([]);
     try {
-      const allDetails = await request("/api/details");
-      setDetails(allDetails.filter((detail) => detail.relatedItemId === item.id));
+      const itemDetails = await request(`/api/details/item/${item.id}`);
+      if (selection === selectionRef.current) setDetails(itemDetails);
     } catch (error) {
-      onError(error.message);
+      if (selection === selectionRef.current) onError(error.message);
     }
   }
 
   function startNewItem() {
+    selectionRef.current += 1;
     setForm(blankItem);
     setDetails([]);
   }
@@ -69,21 +73,30 @@ export default function ItemAdmin({ onError }) {
     setBusy(true);
     onError("");
     try {
-      const item = await request(form.id ? `/api/items/${form.id}` : "/api/items", {
+      const response = await request(form.id ? `/api/items/${form.id}/with-details` : "/api/items/with-details", {
         method: form.id ? "PUT" : "POST",
         body: JSON.stringify({
-          ...form,
-          id: undefined,
-          department: { id: form.department.id }
+          item: {
+            nameOfItem: form.nameOfItem,
+            note: form.note,
+            sequence: form.sequence,
+            code1: form.code1,
+            code2: form.code2,
+            code3: form.code3,
+            code4: form.code4,
+            code5: form.code5,
+            cdinf1: form.cdinf1,
+            cdinf2: form.cdinf2,
+            cdinf3: form.cdinf3,
+            cdinf4: form.cdinf4,
+            cdinf5: form.cdinf5,
+            departmentId: form.department.id
+          },
+          details
         })
       });
-      for (const detail of details) {
-        await request(detail.id ? `/api/details/${detail.id}` : "/api/details", {
-          method: detail.id ? "PUT" : "POST",
-          body: JSON.stringify({ ...detail, id: undefined, relatedItemId: item.id })
-        });
-      }
-      setForm({ ...blankItem, ...item });
+      setForm({ ...blankItem, ...response.item });
+      setDetails(response.details || []);
       await load();
     } catch (error) {
       onError(error.message);
@@ -103,13 +116,8 @@ export default function ItemAdmin({ onError }) {
     }
   }
 
-  async function removeDetail(index, detail) {
-    try {
-      if (detail.id) await request(`/api/details/${detail.id}`, { method: "DELETE" });
-      setDetails((current) => current.filter((_, detailIndex) => detailIndex !== index));
-    } catch (error) {
-      onError(error.message);
-    }
+  function removeDetail(index) {
+    setDetails((current) => current.filter((_, detailIndex) => detailIndex !== index));
   }
 
   return (

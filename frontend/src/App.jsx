@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { tokenKey, userKey } from "./api";
+import { useEffect, useState } from "react";
+import { setUnauthorizedHandler, tokenKey, userKey } from "./api";
 import Login from "./components/Login";
 import AdminWorkspace from "./components/AdminWorkspace";
 import ChecklistWorkspace from "./components/ChecklistWorkspace";
@@ -7,8 +7,19 @@ import ChecklistWorkspace from "./components/ChecklistWorkspace";
 function App() {
   const [user, setUser] = useState(() => {
     const stored = localStorage.getItem(userKey);
-    return stored ? JSON.parse(stored) : null;
+    if (!stored) return null;
+    try {
+      return JSON.parse(stored);
+    } catch {
+      localStorage.removeItem(userKey);
+      return null;
+    }
   });
+
+  useEffect(() => {
+    setUnauthorizedHandler(() => setUser(null));
+    return () => setUnauthorizedHandler(null);
+  }, []);
 
   function logout() {
     localStorage.removeItem(tokenKey);

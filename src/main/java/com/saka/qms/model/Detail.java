@@ -1,6 +1,7 @@
 package com.saka.qms.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -58,6 +59,7 @@ public class Detail implements Identifiable<Integer>, Auditable {
     public void setLink(String link) { this.link = link; }
     public Integer getSequence() { return sequence; }
     public void setSequence(Integer sequence) { this.sequence = sequence; }
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public String getPassward() { return passward; }
     public void setPassward(String passward) { this.passward = passward; }
     public String getModifiedBy() { return modifiedBy; }

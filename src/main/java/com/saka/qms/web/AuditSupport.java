@@ -12,13 +12,23 @@ public final class AuditSupport {
     }
 
     public static void apply(Auditable entity, Authentication authentication) {
-        String username = authentication.getPrincipal() instanceof Employee employee
-                ? employee.getUsername()
-                : authentication.getName();
+        String username = actorName(authentication);
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
 
         entity.setModifiedBy(username);
         entity.setModifiedOn(now);
         entity.setAuthorisedBy(username);
+    }
+
+    public static String actorName(Authentication authentication) {
+        if (authentication == null) {
+            return "anonymous";
+        }
+        if (authentication.getPrincipal() instanceof Employee employee
+                && employee.getUsername() != null
+                && !employee.getUsername().isBlank()) {
+            return employee.getUsername();
+        }
+        return authentication.getName();
     }
 }

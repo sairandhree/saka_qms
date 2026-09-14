@@ -1,6 +1,7 @@
 package com.saka.qms.config;
 
 import com.saka.qms.model.Detail;
+import com.saka.qms.model.Department;
 import com.saka.qms.model.Employee;
 import com.saka.qms.model.NameOfItem;
 import com.saka.qms.repository.NameOfItemRepository;
@@ -24,7 +25,8 @@ public class AccessControlService {
         if (isAdmin(authentication)) {
             return true;
         }
-        if (!(authentication.getPrincipal() instanceof Employee employee)
+        if (authentication == null
+                || !(authentication.getPrincipal() instanceof Employee employee)
                 || item.getDepartment() == null) {
             return false;
         }
@@ -46,7 +48,20 @@ public class AccessControlService {
     }
 
     public boolean canAccessDetail(Authentication authentication, Detail detail) {
-        return canAccessItemId(authentication, detail.getRelatedItemId());
+        return detail != null && canAccessItemId(authentication, detail.getRelatedItemId());
+    }
+
+    public boolean canAccessDepartment(Authentication authentication, Department department) {
+        if (department == null) {
+            return false;
+        }
+        if (isAdmin(authentication)) {
+            return true;
+        }
+        return authentication != null
+                && authentication.getPrincipal() instanceof Employee employee
+                && employee.getDepartments().stream()
+                .anyMatch(assigned -> assigned.getId().equals(department.getId()));
     }
 
     public List<NameOfItem> visibleItems(Authentication authentication, List<NameOfItem> items) {

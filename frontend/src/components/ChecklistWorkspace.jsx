@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { request } from "../api";
 import BrandLogo from "./BrandLogo";
 
@@ -13,6 +13,7 @@ export default function ChecklistWorkspace({ user, onLogout, embedded = false })
   const [loadingDetails, setLoadingDetails] = useState(false);
   const [error, setError] = useState("");
   const [now, setNow] = useState(new Date());
+  const selectionRef = useRef(0);
 
   useEffect(() => {
     const timer = setInterval(() => setNow(new Date()), 1000);
@@ -40,19 +41,23 @@ export default function ChecklistWorkspace({ user, onLogout, embedded = false })
   }, [query]);
 
   async function selectItem(item) {
+    const selection = ++selectionRef.current;
     setSelectedItem(item);
     setQuery(item.nameOfItem || "");
     setMatches([]);
+    setDetails([]);
+    setComments({});
     setLoadingDetails(true);
     setError("");
     try {
-      const allDetails = await request("/api/details");
-      setDetails(allDetails.filter((detail) => detail.relatedItemId === item.id));
-      setComments({});
+      const itemDetails = await request(`/api/details/item/${item.id}`);
+      if (selection === selectionRef.current) {
+        setDetails(itemDetails);
+      }
     } catch (detailsError) {
-      setError(detailsError.message);
+      if (selection === selectionRef.current) setError(detailsError.message);
     } finally {
-      setLoadingDetails(false);
+      if (selection === selectionRef.current) setLoadingDetails(false);
     }
   }
 

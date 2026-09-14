@@ -1,18 +1,25 @@
 package com.saka.qms.web;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ApiError> handleDataIntegrityViolation(
@@ -32,16 +39,55 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleInvalidRequest(
             Exception exception,
             HttpServletRequest request) {
-        Throwable cause = exception;
-        while (cause.getCause() != null) {
-            cause = cause.getCause();
-        }
         return buildError(
                 HttpStatus.BAD_REQUEST,
                 "Invalid request",
-                "The request body or parameter format is invalid: "
-                        + cause.getMessage(),
+                "The request body or parameter format is invalid.",
                 request);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiError> handleValidation(
+            MethodArgumentNotValidException exception,
+            HttpServletRequest request) {
+        String message = exception.getBindingResult().getFieldErrors().stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .collect(Collectors.joining("; "));
+        return buildError(HttpStatus.BAD_REQUEST, "Validation failed", message, request);
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiError> handleConstraintViolation(
+            ConstraintViolationException exception,
+            HttpServletRequest request) {
+        String message = exception.getConstraintViolations().stream()
+                .map(violation -> violation.getPropertyPath() + ": " + violation.getMessage())
+                .collect(Collectors.joining("; "));
+        return buildError(HttpStatus.BAD_REQUEST, "Validation failed", message, request);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiError> handleAccessDenied(
+            AccessDeniedException exception,
+            HttpServletRequest request) {
+        return buildError(HttpStatus.FORBIDDEN, "Forbidden", "You are not allowed to perform this action.", request);
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ApiError> handleIllegalState(
+            IllegalStateException exception,
+            HttpServletRequest request) {
+        return buildError(HttpStatus.BAD_REQUEST, "Request could not be completed.",
+                    "The request could not be completed.", request);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiError> handleUnexpected(
+            Exception exception,
+            HttpServletRequest request) {
+        logger.error("Unexpected request failure at {}", request.getRequestURI(), exception);
+        return buildError(HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error",
+                "An unexpected error occurred.", request);
     }
 
     private ResponseEntity<ApiError> buildError(

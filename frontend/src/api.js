@@ -1,6 +1,12 @@
 export const tokenKey = "saka_qms_token";
 export const userKey = "saka_qms_user";
 
+let unauthorizedHandler = null;
+
+export function setUnauthorizedHandler(handler) {
+  unauthorizedHandler = handler;
+}
+
 export async function request(path, options = {}) {
   const token = localStorage.getItem(tokenKey);
   const response = await fetch(path, {
@@ -15,6 +21,7 @@ export async function request(path, options = {}) {
   if (response.status === 401) {
     localStorage.removeItem(tokenKey);
     localStorage.removeItem(userKey);
+    unauthorizedHandler?.();
     throw new Error("Your session has expired. Please sign in again.");
   }
 
