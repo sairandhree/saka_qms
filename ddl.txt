@@ -30,6 +30,8 @@ insert into qms_checklist.departments(dept_name) values ('Production');
 insert into qms_checklist.departments(dept_name) values ('Stores');
 insert into qms_checklist.departments(dept_name) values ('Marketing and Sales ');
 insert into qms_checklist.departments(dept_name) values ('Processes');
+insert into qms_checklist.departments(dept_name) values ('Human Resources');
+insert into qms_checklist.departments(dept_name) values ('Office Administration');
 
 
 --drop table qms_checklist.employees CASCADE;
@@ -80,6 +82,8 @@ INSERT INTO qms_checklist.employee_departments values(1,7);
 INSERT INTO qms_checklist.employee_departments values(1,8);
 INSERT INTO qms_checklist.employee_departments values(1,9);
 INSERT INTO qms_checklist.employee_departments values(1,10);
+INSERT INTO qms_checklist.employee_departments values(1,11);
+INSERT INTO qms_checklist.employee_departments values(1,12);
 
 
 
@@ -87,6 +91,7 @@ CREATE TABLE qms_checklist.name_of_item (
     id INTEGER PRIMARY KEY,
     name_of_item TEXT,
     note TEXT,
+    dept_id INTEGER,
     sequence VARCHAR(50),
     code1 VARCHAR(50),
     code2 VARCHAR(50),
@@ -98,7 +103,6 @@ CREATE TABLE qms_checklist.name_of_item (
     cdinf3 TEXT,
     cdinf4 TEXT,
     cdinf5 TEXT,
-    dept_id INTEGER,
     modified_by VARCHAR(50),
     modified_on TIMESTAMP,
     authorised_by VARCHAR(50),
@@ -106,6 +110,19 @@ CREATE TABLE qms_checklist.name_of_item (
         FOREIGN KEY (dept_id)
         REFERENCES qms_checklist.departments(id)
 );
+
+-- Create a sequence
+CREATE SEQUENCE qms_checklist.items_id_seq;
+
+-- Set the sequence to start after the current max id
+SELECT setval('qms_checklist.items_id_seq',
+              COALESCE((SELECT MAX(id) FROM qms_checklist.name_of_item), 0) + 1,
+              false);
+
+-- Alter the column to use the sequence by default
+ALTER TABLE qms_checklist.name_of_item
+ALTER COLUMN id SET DEFAULT nextval('qms_checklist.items_id_seq');
+
 
 CREATE TABLE qms_checklist.details (
     id INTEGER PRIMARY KEY,
@@ -123,6 +140,19 @@ CREATE TABLE qms_checklist.details (
         FOREIGN KEY (rel_id)
         REFERENCES qms_checklist.name_of_item(id)
 );
+
+
+-- Create a sequence
+CREATE SEQUENCE qms_checklist.details_id_seq;
+
+-- Set the sequence to start after the current max id
+SELECT setval('qms_checklist.details_id_seq',
+              COALESCE((SELECT MAX(id) FROM qms_checklist.details), 0) + 1,
+              false);
+
+-- Alter the column to use the sequence by default
+ALTER TABLE qms_checklist.details
+ALTER COLUMN id SET DEFAULT nextval('qms_checklist.details_id_seq');
 
 
 CREATE INDEX idx_name_of_item_department
