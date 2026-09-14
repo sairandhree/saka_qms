@@ -106,13 +106,13 @@ function App() {
     return <Login onLogin={setUser} />;
   }
 
-  return user.isAdmin
+  return user.isAdmin || user.isDepartmentHead
     ? <AdminWorkspace user={user} onLogout={logout} />
     : <ChecklistWorkspace user={user} onLogout={logout} />;
 }
 
 function AdminWorkspace({ user, onLogout }) {
-  const [screen, setScreen] = useState("departments");
+  const [screen, setScreen] = useState(user.isAdmin ? "departments" : "items");
   const [error, setError] = useState("");
 
   function openScreen(nextScreen) {
@@ -134,12 +134,16 @@ function AdminWorkspace({ user, onLogout }) {
       </header>
       <main className="workspace">
         <nav className="admin-tabs no-print">
-          <button className={screen === "departments" ? "active" : ""} onClick={() => openScreen("departments")}>
-            Departments
-          </button>
-          <button className={screen === "employees" ? "active" : ""} onClick={() => openScreen("employees")}>
-            Employees
-          </button>
+          {user.isAdmin && (
+            <>
+              <button className={screen === "departments" ? "active" : ""} onClick={() => openScreen("departments")}>
+                Departments
+              </button>
+              <button className={screen === "employees" ? "active" : ""} onClick={() => openScreen("employees")}>
+                Employees
+              </button>
+            </>
+          )}
           <button className={screen === "items" ? "active" : ""} onClick={() => openScreen("items")}>
             Checklist items
           </button>
@@ -148,8 +152,8 @@ function AdminWorkspace({ user, onLogout }) {
           </button>
         </nav>
         {error && <div className="error-banner">{error}</div>}
-        {screen === "departments" && <DepartmentAdmin onError={setError} />}
-        {screen === "employees" && <EmployeeAdmin onError={setError} />}
+        {screen === "departments" && user.isAdmin && <DepartmentAdmin onError={setError} />}
+        {screen === "employees" && user.isAdmin && <EmployeeAdmin onError={setError} />}
         {screen === "items" && <ItemAdmin onError={setError} />}
         {screen === "specification" && <ChecklistWorkspace user={user} onLogout={onLogout} embedded />}
         <p className="admin-footer no-print">Signed in as {user.username}</p>
@@ -159,7 +163,7 @@ function AdminWorkspace({ user, onLogout }) {
 }
 
 function DepartmentAdmin({ onError }) {
-  const blank = { id: null, deptName: "", manager: "" };
+  const blank = { id: null, deptName: "" };
   const [departments, setDepartments] = useState([]);
   const [form, setForm] = useState(blank);
   const [busy, setBusy] = useState(false);
@@ -181,7 +185,7 @@ function DepartmentAdmin({ onError }) {
     try {
       await request(form.id ? `/api/departments/${form.id}` : "/api/departments", {
         method: form.id ? "PUT" : "POST",
-        body: JSON.stringify({ deptName: form.deptName, manager: form.manager })
+        body: JSON.stringify({ deptName: form.deptName })
       });
       setForm(blank);
       await load();
@@ -207,14 +211,12 @@ function DepartmentAdmin({ onError }) {
     <AdminCard title="Departments" eyebrow="MASTER DATA">
       <form className="admin-form" onSubmit={save}>
         <Field label="Department name" value={form.deptName} onChange={(value) => setForm({ ...form, deptName: value })} required />
-        <Field label="Manager" value={form.manager} onChange={(value) => setForm({ ...form, manager: value })} />
         <FormActions editing={Boolean(form.id)} busy={busy} onCancel={() => setForm(blank)} />
       </form>
-      <AdminTable headers={["Department", "Manager", ""]}>
+      <AdminTable headers={["Department", ""]}>
         {departments.map((department) => (
           <tr key={department.id}>
             <td>{department.deptName}</td>
-            <td>{department.manager || "-"}</td>
             <td className="table-actions">
               <button className="table-action" onClick={() => setForm(department)}>Edit</button>
               <button className="remove-button" onClick={() => remove(department)}>Delete</button>
@@ -229,7 +231,7 @@ function DepartmentAdmin({ onError }) {
 function EmployeeAdmin({ onError }) {
   const blank = {
     id: null, employeeId: "", employeeName: "", username: "", password: "",
-    isAdmin: false, departments: []
+    isAdmin: false, isDepartmentHead: false, departments: []
   };
   const [employees, setEmployees] = useState([]);
   const [departments, setDepartments] = useState([]);
@@ -274,6 +276,7 @@ function EmployeeAdmin({ onError }) {
           username: form.username,
           password: form.password || undefined,
           isAdmin: form.isAdmin,
+          isDepartmentHead: form.isDepartmentHead,
           departments: form.departments
         })
       });
@@ -310,6 +313,10 @@ function EmployeeAdmin({ onError }) {
           <input type="checkbox" checked={form.isAdmin} onChange={(event) => setForm({ ...form, isAdmin: event.target.checked })} />
           Administrator
         </label>
+        <label className="check-field">
+          <input type="checkbox" checked={form.isDepartmentHead} onChange={(event) => setForm({ ...form, isDepartmentHead: event.target.checked })} />
+          Department head
+        </label>
         <div>
           <p className="field-label">Departments</p>
           <div className="department-options">
@@ -327,12 +334,13 @@ function EmployeeAdmin({ onError }) {
         </div>
         <FormActions editing={Boolean(form.id)} busy={busy} onCancel={() => setForm(blank)} />
       </form>
-      <AdminTable headers={["Name", "Username", "Admin", "Departments", ""]}>
+      <AdminTable headers={["Name", "Username", "Admin", "Department head", "Departments", ""]}>
         {employees.map((employee) => (
           <tr key={employee.id}>
             <td>{employee.employeeName || "-"}</td>
             <td>{employee.username}</td>
             <td>{employee.isAdmin ? "Yes" : "No"}</td>
+            <td>{employee.isDepartmentHead ? "Yes" : "No"}</td>
             <td>{employee.departments?.map((department) => department.deptName).join(", ") || "-"}</td>
             <td className="table-actions">
               <button className="table-action" onClick={() => setForm({ ...employee, password: "" })}>Edit</button>

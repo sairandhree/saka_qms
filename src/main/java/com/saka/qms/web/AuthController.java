@@ -57,6 +57,7 @@ public class AuthController {
                 employee.getId(),
                 employee.getUsername(),
                 employee.getEmployeeName(),
+                employee.getIsDepartmentHead(),
                 employee.getIsAdmin());
     }
 
@@ -68,6 +69,7 @@ public class AuthController {
             Integer employeeId,
             String username,
             String employeeName,
+            Boolean isDepartmentHead,
             Boolean isAdmin) {
     }
 }

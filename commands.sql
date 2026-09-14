@@ -82,7 +82,11 @@ alter table qms_checklist.employees
 ALTER TABLE qms_checklist.employees
 ADD COLUMN username VARCHAR(100),
 ADD COLUMN password VARCHAR(100),
-ADD COLUMN isAdmin BOOLEAN;
+ADD COLUMN isAdmin BOOLEAN,
+ADD COLUMN is_department_head BOOLEAN;
+
+ALTER TABLE qms_checklist.departments
+DROP COLUMN manager;
 
 ALTER TABLE qms_checklist.details
 RENAME COLUMN detailes_modified_by TO modified_by;

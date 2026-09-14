@@ -24,7 +24,6 @@ public class Department implements Identifiable<Integer>, Auditable {
 
     @Column(name = "dept_name")
     private String deptName;
-    private String manager;
     @Column(name = "modified_by")
     private String modifiedBy;
     @Column(name = "modified_on")
@@ -40,8 +39,6 @@ public class Department implements Identifiable<Integer>, Auditable {
     public void setId(Integer id) { this.id = id; }
     public String getDeptName() { return deptName; }
     public void setDeptName(String deptName) { this.deptName = deptName; }
-    public String getManager() { return manager; }
-    public void setManager(String manager) { this.manager = manager; }
     public String getModifiedBy() { return modifiedBy; }
     public void setModifiedBy(String modifiedBy) { this.modifiedBy = modifiedBy; }
     public LocalDateTime getModifiedOn() { return modifiedOn; }

@@ -51,7 +51,7 @@ public class DetailController {
     public ResponseEntity<Detail> create(
             @RequestBody Detail entity,
             Authentication authentication) {
-        if (!accessControl.isAdmin(authentication)) {
+        if (!accessControl.canManageChecklist(authentication)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         if (!accessControl.canAccessItemId(authentication, entity.getRelatedItemId())) {
@@ -67,7 +67,7 @@ public class DetailController {
             @PathVariable Integer id,
             @RequestBody Detail entity,
             Authentication authentication) {
-        if (!accessControl.isAdmin(authentication)) {
+        if (!accessControl.canManageChecklist(authentication)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         if (!repository.existsById(id)) {
@@ -85,7 +85,7 @@ public class DetailController {
     public ResponseEntity<Void> delete(
             @PathVariable Integer id,
             Authentication authentication) {
-            if (!accessControl.isAdmin(authentication)) {
+            if (!accessControl.canManageChecklist(authentication)) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
             Detail detail = repository.findById(id).orElse(null);

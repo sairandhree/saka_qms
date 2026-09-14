@@ -59,7 +59,7 @@ public class NameOfItemController {
     public ResponseEntity<NameOfItem> create(
             @RequestBody NameOfItem entity,
             Authentication authentication) {
-        if (!accessControl.isAdmin(authentication)) {
+        if (!accessControl.canManageChecklist(authentication)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         if (!accessControl.canAccessItem(authentication, entity)) {
@@ -75,7 +75,7 @@ public class NameOfItemController {
             @PathVariable Integer id,
             @RequestBody NameOfItem entity,
             Authentication authentication) {
-        if (!accessControl.isAdmin(authentication)) {
+        if (!accessControl.canManageChecklist(authentication)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         if (!repository.existsById(id)) {
@@ -93,7 +93,7 @@ public class NameOfItemController {
     public ResponseEntity<Void> delete(
             @PathVariable Integer id,
             Authentication authentication) {
-            if (!accessControl.isAdmin(authentication)) {
+            if (!accessControl.canManageChecklist(authentication)) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
             }
             NameOfItem item = repository.findById(id).orElse(null);

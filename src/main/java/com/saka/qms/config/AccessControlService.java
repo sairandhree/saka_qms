@@ -56,4 +56,12 @@ public class AccessControlService {
                 && authentication.getAuthorities().stream()
                 .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMIN"));
     }
+
+    public boolean canManageChecklist(Authentication authentication) {
+        if (!(authentication != null
+                && authentication.getPrincipal() instanceof Employee employee)) {
+            return false;
+        }
+        return isAdmin(authentication) || Boolean.TRUE.equals(employee.getIsDepartmentHead());
+    }
 }
